@@ -1,0 +1,3039 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV Darul Workspace — Wedding Organizer ERP & Client Portal</title>
+  <!-- Google Fonts: Plus Jakarta Sans, Inter & Material Symbols Rounded -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            gBlue: '#0B57D0',
+            gBlueHover: '#0842A0',
+            gBlueContainer: '#D3E3FD',
+            gBlueText: '#041E49',
+            gSurface: '#F8FAFD',
+            gSurfaceContainer: '#EDF2FA',
+            gOutline: '#E0E3E7',
+            gText: '#1F1F1F',
+            gSubtext: '#444746',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #F8FAFD;
+      color: #1F1F1F;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+    .material-symbols-rounded {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .material-symbols-rounded.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Google 4-color avatar ring */
+    .google-avatar-ring {
+      background: conic-gradient(#EA4335 0deg 90deg, #4285F4 90deg 200deg, #34A853 200deg 290deg, #FBBC05 290deg 360deg);
+      padding: 2.5px;
+      border-radius: 9999px;
+    }
+    /* Material 3 Elevation */
+    .m3-fab {
+      box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .m3-fab:hover {
+      box-shadow: 0 2px 6px 2px rgba(60,64,67,0.3), 0 8px 16px 4px rgba(60,64,67,0.15);
+      transform: translateY(-1px);
+    }
+    .m3-card {
+      background: #FFFFFF;
+      border: 1px solid #E0E3E7;
+      border-radius: 16px;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .m3-card-hover:hover {
+      box-shadow: 0 1px 3px 0 rgba(60,64,67,0.15), 0 4px 8px 3px rgba(60,64,67,0.08);
+      border-color: #C7D0DC;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.85); opacity: 0.9; }
+      70% { transform: scale(1.8); opacity: 0; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    .gps-pulse {
+      animation: pulseRing 2s infinite;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #FFFFFF !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Main Root Container -->
+  <div id="app" class="flex-1 flex flex-col"></div>
+
+  <!-- Material 3 Modal Container -->
+  <div id="modal-root" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-[1px] p-4"></div>
+
+  <!-- Material 3 Snackbar (Toast) -->
+  <div id="snackbar" class="fixed bottom-5 left-5 z-50 hidden items-center gap-3 bg-[#303030] text-white text-sm px-4 py-3 rounded-lg shadow-xl max-w-md transition-all">
+    <span id="snackbar-icon" class="material-symbols-rounded text-[#A8C7FA] text-[20px]">check_circle</span>
+    <span id="snackbar-text" class="flex-1"></span>
+    <button onclick="hideSnackbar()" class="text-[#A8C7FA] font-medium hover:underline text-xs uppercase tracking-wider">Tutup</button>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. STATE & DATA INITIALIZATION (BASED ON SRS, SDD & MOBILE SCREENSHOTS)
+    // =========================================================================
+    const ROLES = {
+      manajer: {
+        id: 'manajer',
+        name: 'Darul',
+        fullTitle: 'Darul (Manajer)',
+        roleLabel: 'Operational Manager',
+        empId: 'ADM-001-001',
+        email: 'darul.manajer@cvdarul.co.id',
+        phone: '+62 811-987-654',
+        office: 'Kantor Pusat Padalarang',
+        avatarBg: '#0B57D0',
+        initial: 'D',
+        portalName: 'OpsControl Manager'
+      },
+      owner: {
+        id: 'owner',
+        name: 'Bapak Darul',
+        fullTitle: 'Bapak Darul (Owner)',
+        roleLabel: 'Pemilik Perusahaan',
+        empId: 'OWN-001-000',
+        email: 'owner@cvdarul.co.id',
+        phone: '+62 811-220-001',
+        office: 'Headquarter Cimahi - Padalarang',
+        avatarBg: '#188038',
+        initial: 'B',
+        portalName: 'Executive Owner'
+      },
+      keuangan: {
+        id: 'keuangan',
+        name: 'Ibu Darul',
+        fullTitle: 'Ibu Darul (Keuangan)',
+        roleLabel: 'Manajer Keuangan & Kas',
+        empId: 'FIN-001-002',
+        email: 'keuangan@cvdarul.co.id',
+        phone: '+62 811-220-002',
+        office: 'Kantor Pusat Padalarang',
+        avatarBg: '#E37400',
+        initial: 'I',
+        portalName: 'Finance & Billing'
+      },
+      admin: {
+        id: 'admin',
+        name: 'Rizky Firmansyah',
+        fullTitle: 'Rizky (Admin Gudang)',
+        roleLabel: 'Admin Inventaris & Logistik',
+        empId: 'GDG-002-003',
+        email: 'admin.gudang@cvdarul.co.id',
+        phone: '+62 812-8877-6655',
+        office: 'Gudang 1 - Besi Padalarang',
+        avatarBg: '#6750A4',
+        initial: 'R',
+        portalName: 'Warehouse Admin'
+      },
+      kru: {
+        id: 'kru',
+        name: 'Ahmad Supriadi',
+        fullTitle: 'Ahmad Supriadi',
+        roleLabel: 'Kru Lapangan Senior',
+        empId: 'EMP-026-004',
+        email: 'ahmad23@cvdarul.co.id',
+        phone: '+62 812-3456-7890',
+        office: 'Cikarang & Padalarang Hub',
+        avatarBg: '#006A6A',
+        initial: 'A',
+        portalName: 'Field Crew Portal'
+      },
+      klien: {
+        id: 'klien',
+        name: 'Citra Wedding Organizer',
+        fullTitle: 'Citra Wedding Organizer',
+        roleLabel: 'Premium Partner WO',
+        empId: 'CW-8892',
+        email: 'citra@weddingorganizer.com',
+        phone: '+62 812-3456-7890',
+        office: 'Griya Astina Blok C2 No. 14, Jakarta Selatan',
+        avatarBg: '#B3261E',
+        initial: 'C',
+        portalName: 'Client / WO Portal'
+      }
+    };
+
+    const state = {
+      isLoggedIn: true, // Start logged in as Manajer for immediate rich workspace view, with 1-click Logout / Switch Role
+      currentRole: 'manajer',
+      activeTab: 'dashboard',
+      searchQuery: '',
+      mobileDrawerOpen: false,
+      waffleOpen: false,
+      profilePopoverOpen: false,
+      notifPopoverOpen: false,
+      // Filters
+      warehouseFilter: 'Semua Gudang',
+      categoryFilter: 'Semua',
+      orderStatusFilter: 'Semua',
+      selectedScheduleDay: 'Rab 14',
+      selectedTruckId: 'ARM-01',
+      mapSatelliteMode: false,
+      auditFilter: 'Semua',
+      // Client 3-Step Booking Wizard State
+      clientWizardStep: 1,
+      clientWizardData: {
+        tanggalAcara: '2026-07-18',
+        lokasiAcara: 'Grand Ballroom, Hotel Mulia Senayan',
+        catatan: 'Mohon dipastikan semua kain dalam keadaan steam-pressed. Pengiriman via Loading Dock B.',
+        cart: {
+          'TS-001': 2,
+          'KF-442': 100
+        }
+      },
+      // Data Tables (Aligned with SDD Physical Design)
+      warehouses: [
+        { id: 'GDG-01', name: 'Gudang 1 - Besi', jenis: 'Konstruksi Berat', lokasi: 'Jl. Raya Padalarang No. 45, Kab. Bandung Barat' },
+        { id: 'GDG-02', name: 'Gudang 2 - Dekorasi & Kain', jenis: 'Tekstil & Furnitur', lokasi: 'Jl. Cimindi Raya No. 112, Cimahi' },
+        { id: 'GDG-03', name: 'Gudang 3 - Elektrikal', jenis: 'Pendingin & Panggung', lokasi: 'Jl. Gatot Subroto No. 88, Cimahi' }
+      ],
+      inventory: [
+        { id: 'TS-001', nama: 'Tenda Sarnafil 5×5m', kategori: 'tenda', total: 50, bagus: 45, rusak: 5, terkunci: 8, harga: 2000000, satuan: 'Unit/hari', gudang: 'Gudang 1 - Besi', metode: 'LIFO' },
+        { id: 'KF-442', nama: 'Kursi Futura + Cover Kain', kategori: 'kursi', total: 450, bagus: 438, rusak: 12, terkunci: 150, harga: 25000, satuan: 'Pcs/hari', gudang: 'Gudang 2 - Dekorasi & Kain', metode: 'LIFO' },
+        { id: 'KT-108', nama: 'Kursi Tiffany Gold Acrylic', kategori: 'kursi', total: 120, bagus: 102, rusak: 18, terkunci: 90, harga: 65000, satuan: 'Pcs/hari', gudang: 'Gudang 2 - Dekorasi & Kain', metode: 'LIFO' },
+        { id: 'MJ-201', nama: 'Meja IBM 180×45cm + Taplak', kategori: 'meja', total: 80, bagus: 78, rusak: 2, terkunci: 15, harga: 150000, satuan: 'Unit/hari', gudang: 'Gudang 2 - Dekorasi & Kain', metode: 'LIFO' },
+        { id: 'PG-301', nama: 'Panggung Rigging 10×12m', kategori: 'panggung', total: 12, bagus: 11, rusak: 1, terkunci: 2, harga: 8500000, satuan: 'Set/acara', gudang: 'Gudang 1 - Besi', metode: 'LIFO' },
+        { id: 'AC-501', nama: 'AC Standing 5 PK', kategori: 'ac', total: 32, bagus: 30, rusak: 2, terkunci: 8, harga: 750000, satuan: 'Unit/hari', gudang: 'Gudang 3 - Elektrikal', metode: 'LIFO' },
+        { id: 'BL-602', nama: 'Misty Fan / Blower Air', kategori: 'blower', total: 40, bagus: 38, rusak: 2, terkunci: 6, harga: 350000, satuan: 'Unit/hari', gudang: 'Gudang 3 - Elektrikal', metode: 'LIFO' },
+        { id: 'KN-701', nama: 'Kain Dekorasi Plafon & Tirai VIP', kategori: 'kain', total: 500, bagus: 492, rusak: 8, terkunci: 120, harga: 45000, satuan: 'Roll/hari', gudang: 'Gudang 2 - Dekorasi & Kain', metode: 'LIFO' }
+      ],
+      orders: [
+        {
+          id: 'ORD-992',
+          wo: 'Citra Wedding Organizer',
+          acara: 'Pernikahan Risa & Aldi',
+          tglPesan: '2026-06-20',
+          tglAcara: '2026-06-29',
+          lokasi: 'Hotel Mulia, Senayan',
+          status: 'Menunggu_Review',
+          stokValid: true,
+          fieldManager: 'Bpk. Heru S.',
+          catatan: 'Akses melalui Loading Dock B pukul 07.00 WIB.',
+          items: [
+            { idBarang: 'TS-001', nama: 'Tenda Sarnafil 5×5m', qty: 5, harga: 2000000 },
+            { idBarang: 'KF-442', nama: 'Kursi Futura + Cover Kain', qty: 150, harga: 25000 }
+          ]
+        },
+        {
+          id: 'ORD-993',
+          wo: 'PT Indo Makmur Event',
+          acara: 'Gathering Korporat ABC',
+          tglPesan: '2026-06-22',
+          tglAcara: '2026-07-02',
+          lokasi: 'ICE BSD, Tangerang',
+          status: 'Menunggu_Review',
+          stokValid: true,
+          fieldManager: 'Darul',
+          catatan: 'Butuh instalasi panggung rigging H-1 malam.',
+          items: [
+            { idBarang: 'PG-301', nama: 'Panggung Rigging 10×12m', qty: 1, harga: 8500000 },
+            { idBarang: 'AC-501', nama: 'AC Standing 5 PK', qty: 6, harga: 750000 }
+          ]
+        },
+        {
+          id: 'ORD-042',
+          wo: 'Citra Wedding Organizer',
+          acara: 'Resepsi Grand Ballroom',
+          tglPesan: '2026-06-10',
+          tglAcara: '2026-06-25',
+          lokasi: 'Grand Ballroom, Jakarta Pusat',
+          status: 'Dalam_Pengiriman',
+          stokValid: true,
+          fieldManager: 'Bpk. Heru S.',
+          catatan: 'Armada B 1234 CD sedang dalam perjalanan.',
+          items: [
+            { idBarang: 'TS-001', nama: 'Tenda Sarnafil 5×5m', qty: 2, harga: 2000000 },
+            { idBarang: 'KF-442', nama: 'Kursi Futura + Cover Kain', qty: 150, harga: 25000 },
+            { idBarang: 'MJ-201', nama: 'Meja IBM 180×45cm + Taplak', qty: 10, harga: 150000 }
+          ]
+        },
+        {
+          id: 'ORD-015',
+          wo: 'Citra Wedding Organizer',
+          acara: 'Pernikahan Budi & Ani',
+          tglPesan: '2026-06-15',
+          tglAcara: '2026-07-10',
+          lokasi: 'Gedung Sate Convention, Bandung',
+          status: 'Dikonfirmasi',
+          stokValid: true,
+          fieldManager: 'Ahmad Supriadi',
+          catatan: 'Jadwal loading disiapkan H-2.',
+          items: [
+            { idBarang: 'KT-108', nama: 'Kursi Tiffany Gold Acrylic', qty: 80, harga: 65000 },
+            { idBarang: 'AC-501', nama: 'AC Standing 5 PK', qty: 4, harga: 750000 }
+          ]
+        },
+        {
+          id: 'ORD-011',
+          wo: 'Mahkota Royal Wedding',
+          acara: 'Pernikahan Azahra & Dimas',
+          tglPesan: '2026-06-05',
+          tglAcara: '2026-06-24',
+          lokasi: 'Cisarua, Bogor',
+          status: 'Dipasang',
+          stokValid: true,
+          fieldManager: 'Ahmad Supriadi',
+          catatan: 'Instalasi tenda VIP selesai 100%.',
+          items: [
+            { idBarang: 'TS-001', nama: 'Tenda Sarnafil 5×5m', qty: 4, harga: 2000000 },
+            { idBarang: 'BL-602', nama: 'Misty Fan / Blower Air', qty: 6, harga: 350000 }
+          ]
+        }
+      ],
+      invoices: [
+        { id: 'INV-0422', orderId: 'ORD-042', wo: 'Citra Wedding Organizer', clientId: 'CW-8892', tanggal: '2026-06-12', jatuhTempo: '2026-06-20', diskon: 250000, total: 9000000, statusBayar: 'Lunas', metode: 'Bank Transfer BCA' },
+        { id: 'INV-0423', orderId: 'ORD-015', wo: 'Citra Wedding Organizer', clientId: 'CW-8892', tanggal: '2026-06-16', jatuhTempo: '2026-06-28', diskon: 0, total: 8200000, statusBayar: 'Belum Lunas', metode: 'Menunggu Transfer' },
+        { id: 'INV-0419', orderId: 'ORD-011', wo: 'Mahkota Royal Wedding', clientId: 'MR-4410', tanggal: '2026-06-06', jatuhTempo: '2026-06-18', diskon: 500000, total: 9600000, statusBayar: 'Belum Lunas', metode: 'Jatuh Tempo' }
+      ],
+      schedules: [
+        { id: 'JDW-01', day: 'Rab 14', time: '06:00 - 08:00', title: 'Briefing Pagi Tim A', venue: 'Headquarter Office Padalarang', type: 'Koordinasi', status: 'Selesai', kru: 'Tim A (6 Orang)', orderId: 'ORD-042' },
+        { id: 'JDW-02', day: 'Rab 14', time: '08:00 - 12:00', title: 'Pernikahan Risa & Aldi', venue: 'Hotel Mulia, Senayan', type: 'Pemasangan', status: 'Berlangsung', kru: 'Kru Lapangan 04 (5 Orang)', orderId: 'ORD-042' },
+        { id: 'JDW-03', day: 'Rab 14', time: '13:30 - 17:00', title: 'Gathering Korporat ABC', venue: 'ICE BSD, Tangerang', type: 'Loading', status: 'Mendatang', kru: 'Tim B (4 Orang)', orderId: 'ORD-993' },
+        { id: 'JDW-04', day: 'Rab 14', time: '19:00 - 22:00', title: 'Konser Jazz Senja', venue: 'Sabuga ITB, Bandung', type: 'Pemasangan', status: 'Mendatang', kru: 'Tim C (8 Orang)', orderId: 'ORD-011' },
+        { id: 'JDW-05', day: 'Kam 15', time: '09:00 - 14:00', title: 'Pernikahan Budi & Ani', venue: 'Gedung Sate Convention, Bandung', type: 'Pemasangan', status: 'Mendatang', kru: 'Kru Lapangan 04 (5 Orang)', orderId: 'ORD-015' },
+        { id: 'JDW-06', day: 'Jum 16', time: '21:00 - 23:30', title: 'Pembongkaran Resepsi Grand Ballroom', venue: 'Grand Ballroom, Jakarta Pusat', type: 'Pembongkaran', status: 'Mendatang', kru: 'Tim A & Tim B', orderId: 'ORD-042' }
+      ],
+      fleet: [
+        { id: 'ARM-01', plat: 'B 1234 CD', jenis: 'Truk Engkel Box', kapasitas: '4 Ton', driver: 'Ahmad Supriadi', status: 'BERGERAK', tujuan: 'Proyek Merdeka - Tower A (Jl. Merdeka No. 45)', eta: '8 Menit (14:45 WIB)', lastUpdate: '12 detik lalu', x: 56, y: 48, speed: '48 km/j', projectNo: 'PRJ-2026-089' },
+        { id: 'ARM-02', plat: 'B 5678 EF', jenis: 'Truk Double Bak', kapasitas: '8 Ton', driver: 'Budiman', status: 'PARKIR', tujuan: 'Gudang 1 - Besi Padalarang', eta: 'Standby Loading', lastUpdate: '2 menit lalu', x: 26, y: 68, speed: '0 km/j', projectNo: 'PRJ-2026-091' },
+        { id: 'ARM-03', plat: 'B 9012 GH', jenis: 'Pickup Blind Van', kapasitas: '1.5 Ton', driver: 'Chandra', status: 'IDLE', tujuan: 'Site Sudirman - Standby Acara', eta: 'Lokasi Tercapai', lastUpdate: '1 menit lalu', x: 72, y: 30, speed: '0 km/j', projectNo: 'PRJ-2026-085' },
+        { id: 'ARM-04', plat: 'D 4321 AB', jenis: 'Truk Fuso Long', kapasitas: '12 Ton', driver: 'Dedi Kurniawan', status: 'BERGERAK', tujuan: 'ICE BSD Tangerang (Tol Cipularang KM 92)', eta: '35 Menit', lastUpdate: '10 detik lalu', x: 42, y: 24, speed: '62 km/j', projectNo: 'PRJ-2026-093' }
+      ],
+      payroll: [
+        { id: 'EMP-026-004', nama: 'Ahmad Supriadi', jabatan: 'Kru Lapangan Senior', baseSalary: 4500000, jobs: 24, bonus: 250000 },
+        { id: 'EMP-026-005', nama: 'Dani Ramdani', jabatan: 'Koordinator Dekorasi', baseSalary: 4500000, jobs: 18, bonus: 150000 },
+        { id: 'EMP-026-006', nama: 'Rizky Maulana', jabatan: 'Supir Armada Utama', baseSalary: 4200000, jobs: 31, bonus: 500000 },
+        { id: 'EMP-026-007', nama: 'Budiman Santoso', jabatan: 'Kru Logistik & Rigging', baseSalary: 3900000, jobs: 21, bonus: 200000 }
+      ],
+      operationalCash: {
+        weeklyLimit: 12450000,
+        used: 4210000,
+        lastUpdate: 'Hari ini, 08:45 WIB',
+        expenses: [
+          { id: 'KAS-01', ket: 'BBM Solar Truk B 1234 CD & D 4321 AB', nominal: 1850000, tgl: 'Hari ini, 07:30' },
+          { id: 'KAS-02', ket: 'Uang Makan & Lembur Tim Setup Hotel Mulia', nominal: 1200000, tgl: 'Kemarin, 19:00' },
+          { id: 'KAS-03', ket: 'Pembelian Baut & Tali Rigging Cadangan', nominal: 1160000, tgl: '2 hari lalu' }
+        ]
+      },
+      auditLogs: [
+        { id: 'LOG-101', type: 'URGENT', title: 'LAPORAN KERUSAKAN MASUK!', desc: 'Kru Ahmad melaporkan 2 unit Kursi Tiffany Gold mengalami retak kaki di Sektor B-4 / Gudang B.', time: '2 menit lalu', unread: true },
+        { id: 'LOG-102', type: 'SYSTEM', title: 'Pembayaran WO Sukses — Invoice #INV-0422', desc: 'Transaksi Rp 9.000.000 dari Citra Wedding Organizer telah diverifikasi oleh sistem keuangan.', time: '15 menit lalu', unread: true },
+        { id: 'LOG-103', type: 'URGENT', title: 'STOK MENIPIS KRITIS!', desc: 'Kursi Tiffany Gold Acrylic (KT-108) tersisa 12 unit bebas sewa di Gudang 2. Segera jadwalkan perbaikan.', time: '1 jam lalu', unread: true },
+        { id: 'LOG-104', type: 'INFO', title: 'Keberangkatan Armada B 1234 CD Terverifikasi', desc: 'Standard QC Checklist & metode LIFO selesai dikonfirmasi oleh Ahmad Supriadi.', time: '2 jam lalu', unread: false }
+      ],
+      crewChecklist: {
+        lifoChecked: true,
+        qcChecked: true,
+        suratJalanChecked: false,
+        stepStatus: 'Pemasangan' // Loading -> Pemasangan -> Pembongkaran
+      }
+    };
+
+    // =========================================================================
+    // 2. UTILITY & FORMATTING HELPERS
+    // =========================================================================
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function formatShortRupiah(num) {
+      if (num >= 1000000) {
+        return 'Rp ' + (num / 1000000).toFixed(1).replace('.0', '') + 'M';
+      }
+      return formatRupiah(num);
+    }
+
+    function calcOrderTotal(order) {
+      return order.items.reduce((sum, item) => sum + (item.qty * item.harga), 0);
+    }
+
+    function showSnackbar(message, icon = 'check_circle') {
+      const sb = document.getElementById('snackbar');
+      document.getElementById('snackbar-text').textContent = message;
+      document.getElementById('snackbar-icon').textContent = icon;
+      sb.classList.remove('hidden');
+      sb.classList.add('flex');
+      clearTimeout(window._sbTimer);
+      window._sbTimer = setTimeout(hideSnackbar, 3800);
+    }
+
+    function hideSnackbar() {
+      const sb = document.getElementById('snackbar');
+      if (sb) {
+        sb.classList.add('hidden');
+        sb.classList.remove('flex');
+      }
+    }
+
+    function openModal(htmlContent) {
+      const modal = document.getElementById('modal-root');
+      modal.innerHTML = htmlContent;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal-root');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modal.innerHTML = '';
+    }
+
+    function closeAllPopovers() {
+      state.waffleOpen = false;
+      state.profilePopoverOpen = false;
+      state.notifPopoverOpen = false;
+    }
+
+    // =========================================================================
+    // 3. ROLE & NAVIGATION CONFIGURATION
+    // =========================================================================
+    function getNavItemsForRole(role) {
+      if (role === 'klien') {
+        return [
+          { id: 'dashboard', label: 'Beranda Klien', icon: 'home' },
+          { id: 'wizard', label: 'Pesan Perlengkapan', icon: 'add_shopping_cart' },
+          { id: 'orders', label: 'Pesanan & Lacak', icon: 'local_shipping', badge: state.orders.filter(o => o.wo.includes('Citra')).length },
+          { id: 'invoices', label: 'Invoice & Tagihan', icon: 'receipt_long' },
+          { id: 'profile', label: 'Profil Mitra WO', icon: 'business' }
+        ];
+      }
+      if (role === 'kru') {
+        return [
+          { id: 'dashboard', label: 'Beranda Kru', icon: 'home' },
+          { id: 'schedule', label: 'Jadwal & QC Tugas', icon: 'event_note' },
+          { id: 'damage_report', label: 'Lapor Kerusakan', icon: 'report_problem' },
+          { id: 'fleet', label: 'Peta & Rute Live', icon: 'map' },
+          { id: 'profile', label: 'Profil & Riwayat', icon: 'badge' }
+        ];
+      }
+      // Management & Admin Roles (Manajer, Owner, Keuangan, Admin Gudang)
+      const pendingCount = state.orders.filter(o => o.status === 'Menunggu_Review').length;
+      const urgentCount = state.auditLogs.filter(l => l.type === 'URGENT' && l.unread).length;
+      return [
+        { id: 'dashboard', label: 'Beranda Overview', icon: 'dashboard' },
+        { id: 'orders', label: 'Pesanan & Approval', icon: 'assignment_turned_in', badge: pendingCount || null },
+        { id: 'inventory', label: 'Inventaris Gudang', icon: 'inventory_2' },
+        { id: 'schedule', label: 'Jadwal & Kru', icon: 'calendar_month' },
+        { id: 'fleet', label: 'Monitoring GPS Live', icon: 'local_shipping' },
+        { id: 'finance', label: 'Keuangan & Payroll', icon: 'payments' },
+        { id: 'audit', label: 'Log Audit & Notifikasi', icon: 'notifications_active', badge: urgentCount || null },
+        { id: 'profile', label: 'Pengaturan & Akses', icon: 'settings' }
+      ];
+    }
+
+    function switchRole(newRole) {
+      state.currentRole = newRole;
+      state.activeTab = 'dashboard';
+      state.isLoggedIn = true;
+      closeAllPopovers();
+      state.mobileDrawerOpen = false;
+      render();
+      showSnackbar(`Beralih ke workspace ${ROLES[newRole].fullTitle}`, 'swap_horiz');
+    }
+
+    function setTab(tabId) {
+      state.activeTab = tabId;
+      closeAllPopovers();
+      state.mobileDrawerOpen = false;
+      render();
+    }
+
+    // =========================================================================
+    // 4. GOOGLE MATERIAL 3 TOP APP BAR & NAVIGATION DRAWER
+    // =========================================================================
+    function renderGoogleLogo() {
+      return `
+        <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="setTab('dashboard')">
+          <div class="w-9 h-9 rounded-xl bg-white border border-[#E0E3E7] shadow-xs flex items-center justify-center relative overflow-hidden">
+            <svg viewBox="0 0 36 36" class="w-6 h-6">
+              <path d="M18 4L6 13v17h8v-9h8v9h8V13L18 4z" fill="#0B57D0"/>
+              <path d="M18 4L6 13h24L18 4z" fill="#34A853"/>
+              <rect x="14" y="21" width="8" height="9" fill="#FBBC05"/>
+              <circle cx="27" cy="9" r="3" fill="#EA4335"/>
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div class="flex items-center gap-1.5">
+              <span class="font-display font-bold text-[18px] tracking-tight text-[#1F1F1F]">CV Darul</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#D3E3FD] text-[#041E49]">Workspace</span>
+            </div>
+            <p class="text-[11px] text-[#444746] hidden sm:block">${ROLES[state.currentRole].portalName}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTopAppBar() {
+      const user = ROLES[state.currentRole];
+      const unreadNotifs = state.auditLogs.filter(l => l.unread).length;
+
+      return `
+        <header class="sticky top-0 z-30 h-16 bg-[#F8FAFD]/95 backdrop-blur-md border-b border-[#E0E3E7] px-3 sm:px-5 flex items-center justify-between gap-3 no-print">
+          <!-- Left: Hamburger + Google Workspace Brand -->
+          <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button onclick="state.mobileDrawerOpen = !state.mobileDrawerOpen; render();" class="p-2.5 rounded-full hover:bg-[#E8EEF7] text-[#444746] transition" title="Menu Navigasi">
+              <span class="material-symbols-rounded">menu</span>
+            </button>
+            ${renderGoogleLogo()}
+          </div>
+
+          <!-- Center: Google Pill Search Bar -->
+          <div class="flex-1 max-w-2xl mx-2 hidden md:block">
+            <div class="relative flex items-center bg-[#EDF2FA] focus-within:bg-white focus-within:shadow-md focus-within:ring-1 focus-within:ring-[#0B57D0]/30 rounded-full h-11 px-4 transition-all">
+              <span class="material-symbols-rounded text-[#444746] mr-3 text-[20px]">search</span>
+              <input
+                type="text"
+                value="${state.searchQuery}"
+                oninput="state.searchQuery = this.value; renderMainOnly();"
+                placeholder="Telusuri pesanan WO, stok gudang, armada truk, atau invoice..."
+                class="w-full bg-transparent text-sm text-[#1F1F1F] placeholder-[#444746] focus:outline-none"
+              />
+              ${state.searchQuery ? `
+                <button onclick="state.searchQuery = ''; render();" class="p-1 rounded-full hover:bg-black/5 text-[#444746]">
+                  <span class="material-symbols-rounded text-[18px]">close</span>
+                </button>
+              ` : `
+                <span class="text-[11px] text-[#444746] bg-white/80 px-2 py-0.5 rounded-md border border-[#E0E3E7]">ERP</span>
+              `}
+            </div>
+          </div>
+
+          <!-- Right: Role Quick Switch Pill + Notifications + 9-Dots Launcher + Google Account Avatar -->
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 relative">
+            <button onclick="state.waffleOpen = !state.waffleOpen; state.profilePopoverOpen = false; state.notifPopoverOpen = false; render();"
+              class="hidden lg:inline-flex items-center gap-1.5 text-xs font-medium bg-white hover:bg-[#EDF2FA] text-[#0B57D0] border border-[#C7D0DC] px-3 py-1.5 rounded-full transition">
+              <span class="material-symbols-rounded text-[16px]">swap_horiz</span>
+              <span>Peran: ${user.name}</span>
+            </button>
+
+            <!-- Notification Bell -->
+            <button onclick="state.notifPopoverOpen = !state.notifPopoverOpen; state.waffleOpen = false; state.profilePopoverOpen = false; render();"
+              class="relative p-2.5 rounded-full hover:bg-[#E8EEF7] text-[#444746] transition" title="Notifikasi Sistem">
+              <span class="material-symbols-rounded">notifications</span>
+              ${unreadNotifs > 0 ? `<span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#B3261E] text-white text-[10px] font-bold flex items-center justify-center">${unreadNotifs}</span>` : ''}
+            </button>
+
+            <!-- Google 9-Dots App Launcher (Waffle Menu) -->
+            <button onclick="state.waffleOpen = !state.waffleOpen; state.profilePopoverOpen = false; state.notifPopoverOpen = false; render();"
+              class="p-2.5 rounded-full hover:bg-[#E8EEF7] text-[#444746] transition" title="Aplikasi & Portal CV Darul">
+              <span class="material-symbols-rounded">apps</span>
+            </button>
+
+            <!-- Google 4-Color Ring Avatar -->
+            <button onclick="state.profilePopoverOpen = !state.profilePopoverOpen; state.waffleOpen = false; state.notifPopoverOpen = false; render();"
+              class="google-avatar-ring ml-1 cursor-pointer focus:outline-none" title="Akun Google Workspace CV Darul">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm border-2 border-white" style="background:${user.avatarBg}">
+                ${user.initial}
+              </div>
+            </button>
+
+            <!-- Notification Dropdown -->
+            ${state.notifPopoverOpen ? renderNotifPopover() : ''}
+
+            <!-- Google 9-Dots Waffle Popover -->
+            ${state.waffleOpen ? renderWafflePopover() : ''}
+
+            <!-- Google Account Switcher Popover -->
+            ${state.profilePopoverOpen ? renderProfilePopover() : ''}
+          </div>
+        </header>
+      `;
+    }
+
+    function renderNotifPopover() {
+      return `
+        <div class="absolute right-12 top-14 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-[#E0E3E7] p-4 z-50">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <h3 class="font-display font-semibold text-sm text-[#1F1F1F]">Notifikasi Operasional</h3>
+            <button onclick="state.auditLogs.forEach(l => l.unread = false); state.notifPopoverOpen = false; render();" class="text-xs text-[#0B57D0] font-medium hover:underline">Tandai dibaca</button>
+          </div>
+          <div class="max-h-72 overflow-y-auto divide-y divide-[#F1F3F4] my-1">
+            ${state.auditLogs.map(log => `
+              <div class="py-2.5 px-2 rounded-xl hover:bg-[#F8FAFD] flex gap-3 items-start cursor-pointer" onclick="setTab('${state.currentRole === 'kru' ? 'damage_report' : 'audit'}')">
+                <span class="material-symbols-rounded text-[20px] mt-0.5 ${log.type === 'URGENT' ? 'text-[#B3261E]' : 'text-[#0B57D0]'}">
+                  ${log.type === 'URGENT' ? 'error' : 'info'}
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-[#1F1F1F] truncate">${log.title}</p>
+                  <p class="text-[11px] text-[#444746] line-clamp-2 mt-0.5">${log.desc}</p>
+                  <span class="text-[10px] text-[#747775] mt-1 block">${log.time}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <button onclick="setTab('audit')" class="w-full mt-2 py-2 text-xs font-semibold text-[#0B57D0] bg-[#EDF2FA] hover:bg-[#D3E3FD] rounded-full transition">
+            Buka Semua Log Audit
+          </button>
+        </div>
+      `;
+    }
+
+    function renderWafflePopover() {
+      const apps = [
+        { role: 'manajer', title: 'OpsControl', sub: 'Manajer', icon: 'admin_panel_settings', color: '#0B57D0' },
+        { role: 'owner', title: 'Executive', sub: 'Bpk. Darul', icon: 'monitoring', color: '#188038' },
+        { role: 'keuangan', title: 'Finance', sub: 'Ibu Darul', icon: 'account_balance_wallet', color: '#E37400' },
+        { role: 'admin', title: 'Gudang LIFO', sub: 'Admin Stok', icon: 'warehouse', color: '#6750A4' },
+        { role: 'kru', title: 'Kru Lapangan', sub: 'Mobile/Web', icon: 'engineering', color: '#006A6A' },
+        { role: 'klien', title: 'Client Portal', sub: 'Mitra WO', icon: 'storefront', color: '#B3261E' }
+      ];
+      return `
+        <div class="absolute right-8 top-14 w-80 bg-[#F8FAFD] rounded-3xl shadow-2xl border border-[#E0E3E7] p-3 z-50">
+          <div class="bg-white rounded-2xl p-3 border border-[#E0E3E7]">
+            <p class="text-[11px] font-semibold text-[#444746] uppercase tracking-wider px-2 mb-2">Portal Layanan CV Darul</p>
+            <div class="grid grid-cols-3 gap-2">
+              ${apps.map(a => `
+                <button onclick="switchRole('${a.role}')" class="flex flex-col items-center p-2.5 rounded-2xl hover:bg-[#EDF2FA] transition text-center ${state.currentRole === a.role ? 'bg-[#D3E3FD]/60 ring-1 ring-[#0B57D0]' : ''}">
+                  <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-white mb-1.5 shadow-xs" style="background:${a.color}">
+                    <span class="material-symbols-rounded text-[22px]">${a.icon}</span>
+                  </div>
+                  <span class="text-xs font-semibold text-[#1F1F1F] leading-tight">${a.title}</span>
+                  <span class="text-[10px] text-[#444746]">${a.sub}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProfilePopover() {
+      const user = ROLES[state.currentRole];
+      return `
+        <div class="absolute right-0 top-14 w-80 bg-[#F8FAFD] rounded-3xl shadow-2xl border border-[#E0E3E7] p-4 z-50">
+          <div class="bg-white rounded-2xl p-4 border border-[#E0E3E7] text-center">
+            <p class="text-xs text-[#444746] mb-3">${user.email}</p>
+            <div class="google-avatar-ring inline-block mb-2">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center text-white font-display font-bold text-2xl border-2 border-white" style="background:${user.avatarBg}">
+                ${user.initial}
+              </div>
+            </div>
+            <h4 class="font-display font-semibold text-base text-[#1F1F1F]">Halo, ${user.name}!</h4>
+            <p class="text-xs text-[#444746] mt-0.5">${user.roleLabel} • ${user.empId}</p>
+            <button onclick="setTab('profile')" class="mt-3 px-4 py-1.5 rounded-full border border-[#747775] text-xs font-semibold text-[#0B57D0] hover:bg-[#EDF2FA] transition">
+              Kelola Akun & Keamanan
+            </button>
+          </div>
+          <div class="mt-3 space-y-1">
+            <p class="text-[11px] font-medium text-[#444746] px-2">Beralih Akun Cepat (Simulasi RBAC):</p>
+            ${Object.values(ROLES).filter(r => r.id !== state.currentRole).map(r => `
+              <button onclick="switchRole('${r.id}')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white text-left transition">
+                <span class="w-7 h-7 rounded-full text-white text-xs font-bold flex items-center justify-center shrink-0" style="background:${r.avatarBg}">${r.initial}</span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-semibold text-[#1F1F1F] truncate">${r.fullTitle}</p>
+                  <p class="text-[10px] text-[#444746] truncate">${r.roleLabel}</p>
+                </div>
+              </button>
+            `).join('')}
+          </div>
+          <button onclick="state.isLoggedIn = false; closeAllPopovers(); render();" class="mt-3 w-full py-2.5 rounded-full bg-white hover:bg-[#FCE8E6] text-[#B3261E] border border-[#E0E3E7] text-xs font-semibold flex items-center justify-center gap-2 transition">
+            <span class="material-symbols-rounded text-[18px]">logout</span>
+            Keluar dari Workspace
+          </button>
+        </div>
+      `;
+    }
+
+    function renderNavigationDrawer() {
+      const navItems = getNavItemsForRole(state.currentRole);
+      const totalAset = state.inventory.reduce((s, i) => s + i.total, 0);
+      const totalBagus = state.inventory.reduce((s, i) => s + i.bagus, 0);
+      const pct = Math.round((totalBagus / totalAset) * 100);
+
+      const fabConfig = state.currentRole === 'kru'
+        ? { label: 'Lapor Kerusakan', icon: 'report_problem', action: "setTab('damage_report')" }
+        : state.currentRole === 'klien'
+        ? { label: 'Pesan Baru WO', icon: 'add', action: "setTab('wizard')" }
+        : { label: 'Pesanan Baru WO', icon: 'add', action: 'openNewOrderModal()' };
+
+      const drawerBody = `
+        <div class="flex flex-col h-full justify-between p-3 select-none">
+          <div>
+            <!-- Google Extended FAB -->
+            <button onclick="${fabConfig.action}" class="m3-fab bg-[#C2E7FF] hover:bg-[#B3DDFB] text-[#001D35] font-display font-semibold text-sm px-5 py-4 rounded-2xl inline-flex items-center gap-3 mb-4 w-full sm:w-auto">
+              <span class="material-symbols-rounded text-[22px]">${fabConfig.icon}</span>
+              <span>${fabConfig.label}</span>
+            </button>
+
+            <!-- Navigation Pill Items -->
+            <nav class="space-y-1">
+              ${navItems.map(item => {
+                const active = state.activeTab === item.id;
+                return `
+                  <button onclick="setTab('${item.id}')" class="w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sm transition ${active ? 'bg-[#D3E3FD] text-[#041E49] font-semibold' : 'text-[#444746] hover:bg-[#E8EEF7] font-medium'}">
+                    <span class="flex items-center gap-3">
+                      <span class="material-symbols-rounded text-[20px] ${active ? 'filled text-[#0B57D0]' : ''}">${item.icon}</span>
+                      <span>${item.label}</span>
+                    </span>
+                    ${item.badge ? `<span class="text-xs font-bold px-2 py-0.5 rounded-full ${active ? 'bg-[#0B57D0] text-white' : 'bg-[#FCE8E6] text-[#B3261E]'}">${item.badge}</span>` : ''}
+                  </button>
+                `;
+              }).join('')}
+            </nav>
+          </div>
+
+          <!-- Google Drive-style Capacity Widget -->
+          <div class="mt-6 pt-4 border-t border-[#E0E3E7] px-2">
+            <div class="flex items-center gap-2 text-xs font-medium text-[#444746] mb-1.5">
+              <span class="material-symbols-rounded text-[18px] text-[#0B57D0]">cloud_done</span>
+              <span>Kesiapan Inventaris LIFO</span>
+            </div>
+            <div class="w-full h-1.5 bg-[#E0E3E7] rounded-full overflow-hidden">
+              <div class="h-full bg-[#0B57D0] rounded-full" style="width: ${pct}%"></div>
+            </div>
+            <p class="text-[11px] text-[#444746] mt-1.5">${totalBagus.toLocaleString('id-ID')} dari ${totalAset.toLocaleString('id-ID')} unit siap sewa (${pct}%)</p>
+            <p class="text-[10px] text-[#747775] mt-2">CV Darul ERP v2.6 • SDD & SRS Compliant</p>
+          </div>
+        </div>
+      `;
+
+      return `
+        <!-- Desktop Fixed Sidebar -->
+        <aside class="hidden lg:block w-64 shrink-0 bg-[#F8FAFD] border-r border-[#E0E3E7]/70 min-h-[calc(100vh-4rem)] no-print">
+          ${drawerBody}
+        </aside>
+
+        <!-- Mobile Drawer Overlay -->
+        ${state.mobileDrawerOpen ? `
+          <div class="fixed inset-0 z-40 lg:hidden flex no-print">
+            <div class="fixed inset-0 bg-black/40" onclick="state.mobileDrawerOpen = false; render();"></div>
+            <div class="relative w-72 max-w-[80vw] bg-[#F8FAFD] h-full shadow-2xl z-10 flex flex-col">
+              <div class="h-16 px-4 flex items-center justify-between border-b border-[#E0E3E7]">
+                ${renderGoogleLogo()}
+                <button onclick="state.mobileDrawerOpen = false; render();" class="p-2 rounded-full hover:bg-[#E8EEF7]">
+                  <span class="material-symbols-rounded">close</span>
+                </button>
+              </div>
+              <div class="flex-1 overflow-y-auto">${drawerBody}</div>
+            </div>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    // =========================================================================
+    // 5. GOOGLE-STYLE SIGN-IN SCREEN (SRS BAB 6.1 & SDD BAB 5.1)
+    // =========================================================================
+    function renderLoginScreen() {
+      return `
+        <div class="min-h-screen bg-[#F0F4F9] flex flex-col items-center justify-center p-4">
+          <div class="w-full max-w-4xl bg-white rounded-[28px] shadow-sm border border-[#E0E3E7] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Column: Google Sign-In Branding -->
+            <div class="lg:col-span-5 flex flex-col justify-between">
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-[#EDF2FA] flex items-center justify-center mb-5">
+                  <svg viewBox="0 0 36 36" class="w-8 h-8">
+                    <path d="M18 4L6 13v17h8v-9h8v9h8V13L18 4z" fill="#0B57D0"/>
+                    <path d="M18 4L6 13h24L18 4z" fill="#34A853"/>
+                    <rect x="14" y="21" width="8" height="9" fill="#FBBC05"/>
+                    <circle cx="27" cy="9" r="3" fill="#EA4335"/>
+                  </svg>
+                </div>
+                <h1 class="font-display text-2xl sm:text-3xl font-semibold text-[#1F1F1F]">Sign in</h1>
+                <p class="text-sm text-[#444746] mt-2">Gunakan Akun <strong>CV Darul Workspace</strong> untuk mengakses Wedding Organizer ERP, Inventaris Gudang, Fleet GPS, atau Portal Klien.</p>
+              </div>
+
+              <div class="mt-6 pt-5 border-t border-[#E0E3E7]">
+                <p class="text-xs font-semibold text-[#444746] mb-2.5">Akses Cepat Berdasarkan Peran (RBAC):</p>
+                <div class="grid grid-cols-2 gap-2">
+                  ${Object.values(ROLES).map(r => `
+                    <button onclick="switchRole('${r.id}')" class="flex items-center gap-2 p-2 rounded-xl border border-[#E0E3E7] hover:bg-[#EDF2FA] hover:border-[#0B57D0] transition text-left">
+                      <span class="w-6 h-6 rounded-full text-white text-[11px] font-bold flex items-center justify-center shrink-0" style="background:${r.avatarBg}">${r.initial}</span>
+                      <div class="min-w-0">
+                        <p class="text-xs font-semibold text-[#1F1F1F] truncate">${r.name}</p>
+                        <p class="text-[10px] text-[#444746] truncate">${r.portalName}</p>
+                      </div>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Email & Password Form -->
+            <div class="lg:col-span-7 flex flex-col justify-center">
+              <form onsubmit="event.preventDefault(); state.isLoggedIn = true; render(); showSnackbar('Selamat datang di CV Darul Workspace!');" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-medium text-[#444746] mb-1.5">Email Address</label>
+                  <div class="relative">
+                    <span class="material-symbols-rounded absolute left-3.5 top-3 text-[#444746] text-[20px]">mail</span>
+                    <input id="login-email" type="email" required value="darul.manajer@cvdarul.co.id"
+                      class="w-full h-12 pl-11 pr-4 rounded-xl border border-[#747775] focus:border-[#0B57D0] focus:ring-2 focus:ring-[#0B57D0]/20 text-sm outline-none transition" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[#444746] mb-1.5">Password</label>
+                  <div class="relative">
+                    <span class="material-symbols-rounded absolute left-3.5 top-3 text-[#444746] text-[20px]">lock</span>
+                    <input id="login-pass" type="password" required value="••••••••••••"
+                      class="w-full h-12 pl-11 pr-11 rounded-xl border border-[#747775] focus:border-[#0B57D0] focus:ring-2 focus:ring-[#0B57D0]/20 text-sm outline-none transition" />
+                    <button type="button" onclick="const p=document.getElementById('login-pass'); p.type = p.type==='password'?'text':'password';"
+                      class="absolute right-3 top-3 text-[#444746] hover:text-[#1F1F1F]">
+                      <span class="material-symbols-rounded text-[20px]">visibility</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs">
+                  <button type="button" onclick="showSnackbar('Tautan pemulihan kata sandi telah dikirim ke email terdaftar.', 'mail')" class="text-[#0B57D0] font-semibold hover:underline">
+                    Lupa Password?
+                  </button>
+                  <span class="text-[#444746] flex items-center gap-1">
+                    <span class="material-symbols-rounded text-[15px] text-[#188038]">verified_user</span>
+                    SSL/TLS 443 Encrypted
+                  </span>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3">
+                  <button type="button" onclick="switchRole('klien')" class="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0B57D0] hover:bg-[#EDF2FA] transition">
+                    Portal Klien / WO
+                  </button>
+                  <button type="submit" class="px-7 py-2.5 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-sm font-semibold inline-flex items-center gap-2 shadow-xs transition">
+                    <span>LOGIN</span>
+                    <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="mt-5 text-center text-xs text-[#444746]">
+            © 2026 CV Darul Wedding Organizer & Party Equipment Rental • Sistem Informasi Manajemen Inventaris & Operasional
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 6. MANAGEMENT & ADMIN VIEWS (MANAJER, OWNER, KEUANGAN, ADMIN GUDANG)
+    // =========================================================================
+    function renderManagementDashboard() {
+      const pendingOrders = state.orders.filter(o => o.status === 'Menunggu_Review').length;
+      const totalRusak = state.inventory.reduce((s, i) => s + i.rusak, 0);
+      const trukJalan = state.fleet.filter(f => f.status === 'BERGERAK').length;
+      const unpaidTotal = state.invoices.filter(i => i.statusBayar !== 'Lunas').reduce((s, i) => s + (i.total - i.diskon), 0);
+
+      // Occupancy percentages
+      const calcOccupancy = (kat) => {
+        const items = state.inventory.filter(i => i.kategori === kat);
+        const tot = items.reduce((s, i) => s + i.total, 0) || 1;
+        const locked = items.reduce((s, i) => s + i.terkunci + i.rusak, 0);
+        return Math.min(96, Math.max(35, Math.round((locked / tot) * 100) + 45));
+      };
+
+      const occTenda = calcOccupancy('tenda');
+      const occKursi = calcOccupancy('kursi');
+      const occAC = calcOccupancy('ac');
+
+      return `
+        <div class="space-y-6">
+          <!-- Page Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Beranda Dashboard</h1>
+              <p class="text-sm text-[#444746]">Ringkasan operasional, logistik LIFO, armada GPS, dan sirkulasi keuangan CV Darul.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="exportInventoryCSV()" class="px-4 py-2 rounded-full bg-white hover:bg-[#EDF2FA] border border-[#C7D0DC] text-xs font-semibold text-[#1F1F1F] inline-flex items-center gap-1.5 transition">
+                <span class="material-symbols-rounded text-[18px] text-[#0B57D0]">download</span>
+                Ekspor Laporan
+              </button>
+              <button onclick="openNewOrderModal()" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1.5 transition">
+                <span class="material-symbols-rounded text-[18px]">add</span>
+                New Wedding Order
+              </button>
+            </div>
+          </div>
+
+          <!-- Urgent Alert Banner (From Manajer Screenshot: Laporan Kerusakan Masuk) -->
+          ${totalRusak > 0 ? `
+            <div onclick="setTab('inventory')" class="cursor-pointer bg-[#FCE8E6] hover:bg-[#FAD2CF] border border-[#F2B8B5] rounded-2xl p-4 flex items-center justify-between gap-4 transition">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-full bg-[#B3261E] text-white flex items-center justify-center shrink-0">
+                  <span class="material-symbols-rounded">warning</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-display font-semibold text-sm text-[#8C1D18]">Laporan Kerusakan Masuk</span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#B3261E] text-white">${totalRusak} Unit</span>
+                  </div>
+                  <p class="text-xs text-[#8C1D18]/90 mt-0.5">Segera periksa detail inventaris rusak & jadwal perbaikan di Gudang 1 dan Gudang 2.</p>
+                </div>
+              </div>
+              <span class="material-symbols-rounded text-[#8C1D18]">chevron_right</span>
+            </div>
+          ` : ''}
+
+          <!-- 4 Key Operational Cards (Aligned with Manajer & SRS Dashboard) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div onclick="setTab('orders')" class="m3-card m3-card-hover p-5 cursor-pointer">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#FEF7E0] text-[#B06000] flex items-center justify-center">
+                  <span class="material-symbols-rounded">pending_actions</span>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FEF7E0] text-[#B06000]">${pendingOrders} Order</span>
+              </div>
+              <p class="text-xs font-medium text-[#444746]">Review Pesanan WO</p>
+              <p class="font-display text-2xl font-bold text-[#1F1F1F] mt-0.5">Baru</p>
+            </div>
+
+            <div onclick="setTab('inventory')" class="m3-card m3-card-hover p-5 cursor-pointer">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#FCE8E6] text-[#B3261E] flex items-center justify-center">
+                  <span class="material-symbols-rounded">build_circle</span>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FCE8E6] text-[#B3261E]">${totalRusak} Item</span>
+              </div>
+              <p class="text-xs font-medium text-[#444746]">Kondisi Inventaris</p>
+              <p class="font-display text-2xl font-bold text-[#B3261E] mt-0.5">Perlu QC / Rusak</p>
+            </div>
+
+            <div onclick="setTab('fleet')" class="m3-card m3-card-hover p-5 cursor-pointer">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#E8F0FE] text-[#0B57D0] flex items-center justify-center">
+                  <span class="material-symbols-rounded">local_shipping</span>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#E6F4EA] text-[#137333]">${trukJalan}/${state.fleet.length} Jalan</span>
+              </div>
+              <p class="text-xs font-medium text-[#444746]">Armada Truk GPS</p>
+              <p class="font-display text-2xl font-bold text-[#0B57D0] mt-0.5">Operasional</p>
+            </div>
+
+            <div onclick="setTab('finance')" class="m3-card m3-card-hover p-5 cursor-pointer">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#F3E8FD] text-[#6750A4] flex items-center justify-center">
+                  <span class="material-symbols-rounded">account_balance_wallet</span>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FCE8E6] text-[#B3261E]">Unpaid</span>
+              </div>
+              <p class="text-xs font-medium text-[#444746]">Piutang Invoice WO</p>
+              <p class="font-display text-2xl font-bold text-[#1F1F1F] mt-0.5">${formatShortRupiah(unpaidTotal)}</p>
+            </div>
+          </div>
+
+          <!-- Middle Row: Okupansi Alat Pesta + Revenue Overview Chart -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Okupansi Alat Pesta Card -->
+            <div class="lg:col-span-5 m3-card p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Okupansi Alat Pesta</h2>
+                    <p class="text-xs text-[#444746]">Tingkat utilisasi aset sewa aktif minggu ini</p>
+                  </div>
+                  <span class="material-symbols-rounded text-[#0B57D0] bg-[#EDF2FA] p-2 rounded-xl">query_stats</span>
+                </div>
+
+                <div class="space-y-5">
+                  <div>
+                    <div class="flex justify-between text-sm font-medium mb-1.5">
+                      <span class="text-[#1F1F1F]">Tenda / Tents</span>
+                      <span class="font-bold text-[#0B57D0]">${occTenda}%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-[#EDF2FA] rounded-full overflow-hidden">
+                      <div class="h-full bg-[#0B57D0] rounded-full transition-all" style="width:${occTenda}%"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-sm font-medium mb-1.5">
+                      <span class="text-[#1F1F1F]">Kursi / Chairs (Futura & Tiffany)</span>
+                      <span class="font-bold text-[#006A6A]">${occKursi}%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-[#EDF2FA] rounded-full overflow-hidden">
+                      <div class="h-full bg-[#006A6A] rounded-full transition-all" style="width:${occKursi}%"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-sm font-medium mb-1.5">
+                      <span class="text-[#1F1F1F]">Pendingin Ruangan (AC & Blower)</span>
+                      <span class="font-bold text-[#6750A4]">${occAC}%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-[#EDF2FA] rounded-full overflow-hidden">
+                      <div class="h-full bg-[#6750A4] rounded-full transition-all" style="width:${occAC}%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-[#E0E3E7] flex items-center justify-between text-xs">
+                <span class="text-[#444746]">Kepuasan Klien WO: <strong class="text-[#1F1F1F]">4.8 / 5.0 ⭐</strong></span>
+                <button onclick="setTab('inventory')" class="text-[#0B57D0] font-semibold hover:underline">Detail Stok →</button>
+              </div>
+            </div>
+
+            <!-- Revenue Overview (Google Analytics Style Clean SVG Chart) -->
+            <div class="lg:col-span-7 m3-card p-6">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <div>
+                  <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Revenue Overview (Omzet Sewa 2026)</h2>
+                  <p class="text-xs text-[#444746]">Perbandingan pendapatan bulanan proyek Wedding Organizer</p>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#E6F4EA] text-[#137333]">+18.4% vs bulan lalu</span>
+              </div>
+
+              <div class="w-full overflow-x-auto">
+                <svg viewBox="0 0 560 200" class="w-full h-48">
+                  <!-- Horizontal Grid Lines -->
+                  <line x1="45" y1="25" x2="540" y2="25" stroke="#EDF2FA" stroke-width="1"/>
+                  <line x1="45" y1="68" x2="540" y2="68" stroke="#EDF2FA" stroke-width="1"/>
+                  <line x1="45" y1="112" x2="540" y2="112" stroke="#EDF2FA" stroke-width="1"/>
+                  <line x1="45" y1="155" x2="540" y2="155" stroke="#E0E3E7" stroke-width="1"/>
+                  <!-- Y-Axis Labels -->
+                  <text x="5" y="29" font-size="10" fill="#747775">120jt</text>
+                  <text x="5" y="72" font-size="10" fill="#747775">90jt</text>
+                  <text x="5" y="116" font-size="10" fill="#747775">60jt</text>
+                  <text x="5" y="159" font-size="10" fill="#747775">30jt</text>
+                  <!-- Bars (Google Blue) -->
+                  <rect x="65" y="95" width="36" height="60" rx="8" fill="#D3E3FD"/>
+                  <rect x="145" y="76" width="36" height="79" rx="8" fill="#D3E3FD"/>
+                  <rect x="225" y="62" width="36" height="93" rx="8" fill="#D3E3FD"/>
+                  <rect x="305" y="82" width="36" height="73" rx="8" fill="#D3E3FD"/>
+                  <rect x="385" y="45" width="36" height="110" rx="8" fill="#A8C7FA"/>
+                  <rect x="465" y="28" width="36" height="127" rx="8" fill="#0B57D0"/>
+                  <!-- Trend Line -->
+                  <polyline fill="none" stroke="#0B57D0" stroke-width="2.5" points="83,95 163,76 243,62 323,82 403,45 483,28"/>
+                  <circle cx="83" cy="95" r="4" fill="#0B57D0"/>
+                  <circle cx="163" cy="76" r="4" fill="#0B57D0"/>
+                  <circle cx="243" cy="62" r="4" fill="#0B57D0"/>
+                  <circle cx="323" cy="82" r="4" fill="#0B57D0"/>
+                  <circle cx="403" cy="45" r="4" fill="#0B57D0"/>
+                  <circle cx="483" cy="28" r="5" fill="#188038" stroke="#fff" stroke-width="2"/>
+                  <!-- Month Labels -->
+                  <text x="73" y="178" font-size="11" fill="#444746">Jan</text>
+                  <text x="153" y="178" font-size="11" fill="#444746">Feb</text>
+                  <text x="233" y="178" font-size="11" fill="#444746">Mar</text>
+                  <text x="313" y="178" font-size="11" fill="#444746">Apr</text>
+                  <text x="393" y="178" font-size="11" fill="#444746">Mei</text>
+                  <text x="473" y="178" font-size="11" font-weight="700" fill="#0B57D0">Jun</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Antrian Persetujuan Cepat + Recent Activity Timeline -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-7 m3-card p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Antrian Persetujuan Pesanan Masuk</h2>
+                  <p class="text-xs text-[#444746]">Validasi ketersediaan stok & kunci kuota tanggal acara</p>
+                </div>
+                <button onclick="setTab('orders')" class="text-xs font-semibold text-[#0B57D0] hover:underline">Lihat Semua (${state.orders.length})</button>
+              </div>
+              <div class="space-y-3">
+                ${state.orders.filter(o => o.status === 'Menunggu_Review').map(ord => `
+                  <div class="p-4 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-[#0B57D0]">#${ord.id}</span>
+                        <span class="text-xs text-[#444746]">• Acara: <strong>${ord.tglAcara}</strong></span>
+                      </div>
+                      <h3 class="font-display font-semibold text-sm text-[#1F1F1F] mt-0.5">${ord.wo} — ${ord.acara}</h3>
+                      <p class="text-xs text-[#444746] mt-1">${ord.items.map(i => `${i.nama} (${i.qty})`).join(', ')}</p>
+                      <span class="inline-flex items-center gap-1 text-[11px] font-medium text-[#137333] bg-[#E6F4EA] px-2.5 py-0.5 rounded-full mt-2">
+                        <span class="material-symbols-rounded text-[14px]">check_circle</span>
+                        Stok Tersedia di Gudang untuk Tanggal Tersebut
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button onclick="rejectOrder('${ord.id}')" class="px-4 py-2 rounded-full border border-[#B3261E] text-[#B3261E] hover:bg-[#FCE8E6] text-xs font-semibold transition">
+                        Tolak
+                      </button>
+                      <button onclick="approveOrder('${ord.id}')" class="px-4 py-2 rounded-full bg-[#188038] hover:bg-[#137333] text-white text-xs font-semibold transition">
+                        Setujui & Kunci Stok
+                      </button>
+                    </div>
+                  </div>
+                `).join('') || `<p class="text-sm text-[#444746] py-6 text-center">Semua pesanan baru telah ditinjau.</p>`}
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 m3-card p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Recent Activity</h2>
+                <button onclick="setTab('audit')" class="text-xs font-semibold text-[#0B57D0] hover:underline">Log Audit</button>
+              </div>
+              <div class="space-y-4">
+                ${state.auditLogs.slice(0, 4).map(log => `
+                  <div class="flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${log.type === 'URGENT' ? 'bg-[#FCE8E6] text-[#B3261E]' : 'bg-[#EDF2FA] text-[#0B57D0]'}">
+                      <span class="material-symbols-rounded text-[18px]">${log.type === 'URGENT' ? 'priority_high' : 'sync_alt'}</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-xs font-semibold text-[#1F1F1F]">${log.title}</p>
+                      <p class="text-xs text-[#444746] mt-0.5">${log.desc}</p>
+                      <span class="text-[10px] text-[#747775]">${log.time}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 7. ORDERS & APPROVAL VIEW (SDD STATE LIFECYCLE + MANAJER APPROVAL)
+    // =========================================================================
+    function approveOrder(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      ord.status = 'Dikonfirmasi';
+      // Lock stock
+      ord.items.forEach(item => {
+        const inv = state.inventory.find(x => x.id === item.idBarang);
+        if (inv) inv.terkunci += item.qty;
+      });
+      // Auto generate invoice per Sequence Diagram
+      const invId = 'INV-' + Math.floor(1000 + Math.random() * 9000);
+      state.invoices.unshift({
+        id: invId,
+        orderId: ord.id,
+        wo: ord.wo,
+        clientId: 'CW-8892',
+        tanggal: new Date().toISOString().slice(0, 10),
+        jatuhTempo: ord.tglAcara,
+        diskon: 0,
+        total: calcOrderTotal(ord),
+        statusBayar: 'Belum Lunas',
+        metode: 'Bank Transfer BCA'
+      });
+      state.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        type: 'SYSTEM',
+        title: `Pesanan #${ord.id} Disetujui & Stok Dikunci`,
+        desc: `Kuota barang untuk ${ord.wo} dikunci & Invoice #${invId} otomatis diterbitkan.`,
+        time: 'Baru saja',
+        unread: true
+      });
+      render();
+      showSnackbar(`Pesanan #${ord.id} disetujui, stok dikunci, & Invoice #${invId} dibuat!`);
+    }
+
+    function rejectOrder(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      ord.status = 'Ditolak';
+      state.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        type: 'INFO',
+        title: `Pesanan #${ord.id} Ditolak`,
+        desc: `Permintaan sewa dari ${ord.wo} ditolak pada tahap review.`,
+        time: 'Baru saja',
+        unread: true
+      });
+      render();
+      showSnackbar(`Pesanan #${ord.id} telah ditolak.`, 'cancel');
+    }
+
+    function advanceOrderState(orderId) {
+      const flow = ['Menunggu_Review', 'Dikonfirmasi', 'Dijadwalkan', 'Dalam_Pengiriman', 'Dipasang', 'Dalam_Pembongkaran', 'Kembali', 'Selesai'];
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      const idx = flow.indexOf(ord.status);
+      if (idx >= 0 && idx < flow.length - 1) {
+        ord.status = flow[idx + 1];
+        if (ord.status === 'Selesai') {
+          ord.items.forEach(item => {
+            const inv = state.inventory.find(x => x.id === item.idBarang);
+            if (inv) inv.terkunci = Math.max(0, inv.terkunci - item.qty);
+          });
+        }
+        render();
+        showSnackbar(`Status #${ord.id} diperbarui menjadi "${ord.status.replace('_', ' ')}"`);
+      }
+    }
+
+    function getStatusBadge(status) {
+      const map = {
+        'Menunggu_Review': 'bg-[#FEF7E0] text-[#B06000]',
+        'Dikonfirmasi': 'bg-[#E8F0FE] text-[#0B57D0]',
+        'Dijadwalkan': 'bg-[#F3E8FD] text-[#6750A4]',
+        'Dalam_Pengiriman': 'bg-[#E0F2FE] text-[#0369A1]',
+        'Dipasang': 'bg-[#E6F4EA] text-[#137333]',
+        'Dalam_Pembongkaran': 'bg-[#FEF7E0] text-[#B06000]',
+        'Kembali': 'bg-[#EDF2FA] text-[#444746]',
+        'Selesai': 'bg-[#E6F4EA] text-[#137333]',
+        'Ditolak': 'bg-[#FCE8E6] text-[#B3261E]'
+      };
+      return `<span class="text-xs font-semibold px-3 py-1 rounded-full ${map[status] || 'bg-[#EDF2FA] text-[#444746]'}">${status.replace('_', ' ')}</span>`;
+    }
+
+    function renderOrdersView() {
+      const q = state.searchQuery.toLowerCase();
+      let list = state.orders.filter(o =>
+        o.id.toLowerCase().includes(q) ||
+        o.wo.toLowerCase().includes(q) ||
+        o.acara.toLowerCase().includes(q) ||
+        o.lokasi.toLowerCase().includes(q)
+      );
+      if (state.currentRole === 'klien') {
+        list = list.filter(o => o.wo.includes('Citra'));
+      }
+      if (state.orderStatusFilter !== 'Semua') {
+        list = list.filter(o => o.status === state.orderStatusFilter);
+      }
+
+      const tabs = ['Semua', 'Menunggu_Review', 'Dikonfirmasi', 'Dalam_Pengiriman', 'Dipasang', 'Selesai', 'Ditolak'];
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">
+                ${state.currentRole === 'klien' ? 'Pesanan Saya & Pelacakan Logistik' : 'Manajemen Pesanan & Antrian Persetujuan'}
+              </h1>
+              <p class="text-sm text-[#444746]">Siklus hidup pesanan terintegrasi (Review → Kunci Stok → Pengiriman → Pemasangan → Selesai).</p>
+            </div>
+            <button onclick="${state.currentRole === 'klien' ? "setTab('wizard')" : 'openNewOrderModal()'}" class="px-5 py-2.5 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-2">
+              <span class="material-symbols-rounded text-[18px]">add</span>
+              Buat Pesanan Baru
+            </button>
+          </div>
+
+          <!-- Filter Chips (Material 3) -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1">
+            ${tabs.map(t => `
+              <button onclick="state.orderStatusFilter = '${t}'; render();" class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition ${state.orderStatusFilter === t ? 'bg-[#D3E3FD] border-[#0B57D0] text-[#041E49]' : 'bg-white border-[#E0E3E7] text-[#444746] hover:bg-[#EDF2FA]'}">
+                ${t.replace('_', ' ')}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Order Cards -->
+          <div class="grid grid-cols-1 gap-4">
+            ${list.map(ord => {
+              const total = calcOrderTotal(ord);
+              return `
+                <div class="m3-card p-5">
+                  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                      <div class="flex flex-wrap items-center gap-2.5">
+                        <span class="font-display font-bold text-sm text-[#0B57D0]">#${ord.id}</span>
+                        ${getStatusBadge(ord.status)}
+                        <span class="text-xs text-[#444746] inline-flex items-center gap-1">
+                          <span class="material-symbols-rounded text-[15px]">event</span>
+                          Acara: <strong>${ord.tglAcara}</strong>
+                        </span>
+                        <span class="text-xs text-[#444746] inline-flex items-center gap-1">
+                          <span class="material-symbols-rounded text-[15px]">person</span>
+                          PIC Lapangan: <strong>${ord.fieldManager}</strong>
+                        </span>
+                      </div>
+                      <h3 class="font-display font-semibold text-base text-[#1F1F1F]">${ord.wo} — ${ord.acara}</h3>
+                      <p class="text-xs text-[#444746] flex items-center gap-1">
+                        <span class="material-symbols-rounded text-[15px]">location_on</span>
+                        ${ord.lokasi} • <em class="text-[#747775]">"${ord.catatan}"</em>
+                      </p>
+                      <div class="flex flex-wrap gap-1.5 pt-1">
+                        ${ord.items.map(it => `
+                          <span class="text-xs bg-[#EDF2FA] text-[#1F1F1F] px-2.5 py-1 rounded-lg font-medium">
+                            ${it.nama} × <strong>${it.qty}</strong>
+                          </span>
+                        `).join('')}
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3 border-t lg:border-t-0 pt-3 lg:pt-0 border-[#E0E3E7] shrink-0">
+                      <div class="lg:text-right">
+                        <span class="text-[11px] text-[#444746] block">Estimasi Total Sewa</span>
+                        <span class="font-display font-bold text-lg text-[#1F1F1F]">${formatRupiah(total)}</span>
+                      </div>
+
+                      <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="openOrderTrackingModal('${ord.id}')" class="px-3.5 py-2 rounded-full border border-[#C7D0DC] hover:bg-[#EDF2FA] text-xs font-semibold text-[#0B57D0] inline-flex items-center gap-1">
+                          <span class="material-symbols-rounded text-[16px]">timeline</span>
+                          Lacak Status
+                        </button>
+                        ${state.currentRole !== 'klien' && ord.status === 'Menunggu_Review' ? `
+                          <button onclick="rejectOrder('${ord.id}')" class="px-3.5 py-2 rounded-full border border-[#B3261E] text-[#B3261E] hover:bg-[#FCE8E6] text-xs font-semibold">Tolak</button>
+                          <button onclick="approveOrder('${ord.id}')" class="px-4 py-2 rounded-full bg-[#188038] hover:bg-[#137333] text-white text-xs font-semibold">Setujui & Kunci Stok</button>
+                        ` : ''}
+                        ${state.currentRole !== 'klien' && !['Menunggu_Review', 'Selesai', 'Ditolak'].includes(ord.status) ? `
+                          <button onclick="advanceOrderState('${ord.id}')" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1">
+                            <span>Tahap Berikutnya</span>
+                            <span class="material-symbols-rounded text-[16px]">arrow_forward</span>
+                          </button>
+                        ` : ''}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openOrderTrackingModal(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      const steps = [
+        { key: 'Menunggu_Review', label: 'Pesanan Diajukan oleh WO', time: ord.tglPesan + ', 09:15 WIB' },
+        { key: 'Dikonfirmasi', label: 'Direview & Dikonfirmasi Manajer (Stok Dikunci)', time: ord.tglPesan + ', 14:30 WIB' },
+        { key: 'Dijadwalkan', label: 'Invoice Diterbitkan & Dijadwalkan Masuk Truk', time: 'H-2 Sebelum Acara' },
+        { key: 'Dalam_Pengiriman', label: 'Dalam Perjalanan ke Lokasi Venue (GPS Aktif)', time: 'Hari H, 07:00 WIB' },
+        { key: 'Dipasang', label: 'Pemasangan Tenda & Dekorasi Selesai (Foto QC)', time: 'Hari H, 11:30 WIB' },
+        { key: 'Selesai', label: 'Pembongkaran & Kembali ke Gudang (QC OK)', time: 'Pasca Acara' }
+      ];
+      const orderFlow = ['Menunggu_Review', 'Dikonfirmasi', 'Dijadwalkan', 'Dalam_Pengiriman', 'Dipasang', 'Dalam_Pembongkaran', 'Kembali', 'Selesai'];
+      const currIdx = orderFlow.indexOf(ord.status);
+
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-lg w-full p-6 shadow-2xl border border-[#E0E3E7] max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between pb-4 border-b border-[#E0E3E7]">
+            <div>
+              <span class="text-xs font-bold text-[#0B57D0]">#${ord.id}</span>
+              <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Logistik & Operasional Proyek</h3>
+            </div>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+
+          <div class="my-4 p-4 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7]">
+            <p class="text-xs text-[#444746]">Nama Proyek</p>
+            <p class="font-display font-semibold text-sm text-[#1F1F1F]">${ord.wo} — ${ord.acara}</p>
+            <div class="grid grid-cols-2 gap-3 mt-3 text-xs">
+              <div><span class="text-[#444746] block">Tanggal Event</span><strong>${ord.tglAcara}</strong></div>
+              <div><span class="text-[#444746] block">Field Manager</span><strong>${ord.fieldManager}</strong></div>
+            </div>
+          </div>
+
+          <div class="space-y-4 my-4 pl-2">
+            ${steps.map((st, idx) => {
+              const stIdx = orderFlow.indexOf(st.key);
+              const done = currIdx >= stIdx && ord.status !== 'Ditolak';
+              return `
+                <div class="flex gap-3.5 items-start">
+                  <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-[#188038] text-white' : 'bg-[#EDF2FA] text-[#747775]'}">
+                    <span class="material-symbols-rounded text-[16px]">${done ? 'check' : 'radio_button_unchecked'}</span>
+                  </div>
+                  <div>
+                    <p class="text-xs font-semibold ${done ? 'text-[#1F1F1F]' : 'text-[#747775]'}">${st.label}</p>
+                    <p class="text-[11px] text-[#444746]">${st.time}</p>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-[#E0E3E7]">
+            <button onclick="closeModal(); setTab('fleet');" class="px-4 py-2 rounded-full bg-[#EDF2FA] text-[#0B57D0] text-xs font-semibold">Lihat Peta Armada</button>
+            <button onclick="closeModal()" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Tutup</button>
+          </div>
+        </div>
+      `);
+    }
+
+    // =========================================================================
+    // 8. INVENTORY MANAGEMENT VIEW (MANAJEMEN STOK TERPUSAT & LIFO)
+    // =========================================================================
+    function renderInventoryView() {
+      const q = state.searchQuery.toLowerCase();
+      const warehouses = ['Semua Gudang', 'Gudang 1 - Besi', 'Gudang 2 - Dekorasi & Kain', 'Gudang 3 - Elektrikal'];
+      const categories = ['Semua', 'tenda', 'kursi', 'meja', 'kain', 'panggung', 'blower', 'ac'];
+
+      const filtered = state.inventory.filter(item => {
+        const matchW = state.warehouseFilter === 'Semua Gudang' || item.gudang === state.warehouseFilter;
+        const matchC = state.categoryFilter === 'Semua' || item.kategori === state.categoryFilter;
+        const matchQ = item.nama.toLowerCase().includes(q) || item.id.toLowerCase().includes(q) || item.gudang.toLowerCase().includes(q);
+        return matchW && matchC && matchQ;
+      });
+
+      const totalAset = filtered.reduce((s, i) => s + i.total, 0);
+      const totalBagus = filtered.reduce((s, i) => s + i.bagus, 0);
+      const totalRusak = filtered.reduce((s, i) => s + i.rusak, 0);
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Manajemen Stok Terpusat</h1>
+              <p class="text-sm text-[#444746]">Pantau ketersediaan aset multi-gudang secara real-time dengan metode pengeluaran <strong>LIFO</strong>.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="exportInventoryCSV()" class="px-4 py-2 rounded-full bg-white border border-[#C7D0DC] hover:bg-[#EDF2FA] text-xs font-semibold text-[#1F1F1F] inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px] text-[#188038]">table_view</span>
+                Ekspor CSV/Excel
+              </button>
+              <button onclick="openAddInventoryModal()" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px]">add</span>
+                Tambah Master Barang
+              </button>
+            </div>
+          </div>
+
+          <!-- Warehouse Filter Pills -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1">
+            ${warehouses.map(w => `
+              <button onclick="state.warehouseFilter = '${w}'; render();" class="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition ${state.warehouseFilter === w ? 'bg-[#0B57D0] border-[#0B57D0] text-white' : 'bg-white border-[#E0E3E7] text-[#444746] hover:bg-[#EDF2FA]'}">
+                ${w}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Summary Metric Cards (From Manajer Screenshot) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="m3-card p-5">
+              <span class="text-xs font-semibold text-[#444746] uppercase tracking-wider">Total Aset Terfilter</span>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="font-display text-3xl font-bold text-[#1F1F1F]">${totalAset.toLocaleString('id-ID')}</span>
+                <span class="text-xs font-semibold text-[#137333] bg-[#E6F4EA] px-2 py-0.5 rounded-full">Unit Aktif</span>
+              </div>
+            </div>
+            <div class="m3-card p-5 bg-[#041E49] text-white border-[#041E49]">
+              <span class="text-xs font-semibold text-[#A8C7FA] uppercase tracking-wider">Status Metode Gudang</span>
+              <div class="flex items-center gap-2.5 mt-2">
+                <span class="material-symbols-rounded text-[#7FCFFF] text-[28px]">inventory</span>
+                <div>
+                  <p class="font-display text-xl font-bold">LIFO Aktif</p>
+                  <p class="text-[11px] text-[#C2E7FF]">Last-In, First-Out Picking Terkunci</p>
+                </div>
+              </div>
+            </div>
+            <div class="m3-card p-5">
+              <span class="text-xs font-semibold text-[#444746] uppercase tracking-wider">Kondisi Fisik (QC)</span>
+              <div class="flex items-center gap-5 mt-2">
+                <div>
+                  <span class="text-xs text-[#137333] font-semibold block">Bagus</span>
+                  <span class="font-display text-2xl font-bold text-[#137333]">${totalBagus}</span>
+                </div>
+                <div class="h-8 w-px bg-[#E0E3E7]"></div>
+                <div>
+                  <span class="text-xs text-[#B3261E] font-semibold block">Rusak / Maintenance</span>
+                  <span class="font-display text-2xl font-bold text-[#B3261E]">${totalRusak}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Filter Chips (SDD ENUM Categories) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+            <span class="text-xs text-[#444746] mr-1">Kategori:</span>
+            ${categories.map(c => `
+              <button onclick="state.categoryFilter = '${c}'; render();" class="px-3 py-1 rounded-full text-xs font-medium capitalize border transition ${state.categoryFilter === c ? 'bg-[#D3E3FD] border-[#0B57D0] text-[#041E49] font-semibold' : 'bg-white border-[#E0E3E7] text-[#444746] hover:bg-[#EDF2FA]'}">
+                ${c}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Inventory Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${filtered.map(item => {
+              const bebasSewa = Math.max(0, item.bagus - item.terkunci);
+              return `
+                <div class="m3-card m3-card-hover p-5 flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-bold text-[#0B57D0]">#${item.id}</span>
+                          <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#EDF2FA] text-[#444746] capitalize">${item.kategori}</span>
+                          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#E0F2FE] text-[#0369A1]">${item.metode}</span>
+                        </div>
+                        <h3 class="font-display font-semibold text-base text-[#1F1F1F] mt-1">${item.nama}</h3>
+                        <p class="text-xs text-[#444746] mt-0.5">${item.gudang} • Tarif: <strong>${formatRupiah(item.harga)}</strong>/${item.satuan}</p>
+                      </div>
+                      <button onclick="openStokOpnameModal('${item.id}')" class="p-2 rounded-full hover:bg-[#EDF2FA] text-[#444746]" title="Edit & Stok Opname">
+                        <span class="material-symbols-rounded text-[20px]">edit</span>
+                      </button>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-2 my-4 p-3 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] text-center">
+                      <div>
+                        <span class="text-[10px] text-[#444746] block">Stok Total</span>
+                        <span class="font-display font-bold text-sm text-[#1F1F1F]">${item.total}</span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-[#137333] block">Bagus</span>
+                        <span class="font-display font-bold text-sm text-[#137333]">${item.bagus}</span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-[#0B57D0] block">Terkunci</span>
+                        <span class="font-display font-bold text-sm text-[#0B57D0]">${item.terkunci}</span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-[#B3261E] block">Rusak</span>
+                        <span class="font-display font-bold text-sm text-[#B3261E]">${item.rusak}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-2 pt-2 border-t border-[#E0E3E7]">
+                    <span class="text-xs text-[#444746]">Siap Sewa Bebas: <strong class="${bebasSewa < 15 ? 'text-[#B3261E]' : 'text-[#137333]'}">${bebasSewa} Unit</strong></span>
+                    <div class="flex items-center gap-2">
+                      ${item.rusak > 0 ? `
+                        <button onclick="repairItem('${item.id}')" class="px-3 py-1.5 rounded-full bg-[#E6F4EA] hover:bg-[#CEEAD6] text-[#137333] text-xs font-semibold">
+                          Selesai Perbaikan
+                        </button>
+                      ` : ''}
+                      <button onclick="openStokOpnameModal('${item.id}')" class="px-4 py-1.5 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold">
+                        Stok Opname
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openStokOpnameModal(itemId) {
+      const item = state.inventory.find(i => i.id === itemId);
+      if (!item) return;
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <div>
+              <span class="text-xs font-bold text-[#0B57D0]">#${item.id} • Audit Fisik Gudang</span>
+              <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Stok Opname: ${item.nama}</h3>
+            </div>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <form onsubmit="submitStokOpname(event, '${item.id}')" class="space-y-4 mt-4">
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Lokasi Penyimpanan Gudang</label>
+              <select id="opname-gudang" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm">
+                ${state.warehouses.map(w => `<option value="${w.name}" ${w.name === item.gudang ? 'selected' : ''}>${w.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#137333] mb-1">Jumlah Kondisi Bagus</label>
+                <input id="opname-bagus" type="number" min="0" required value="${item.bagus}" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm font-semibold" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#B3261E] mb-1">Jumlah Kondisi Rusak</label>
+                <input id="opname-rusak" type="number" min="0" required value="${item.rusak}" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm font-semibold" />
+              </div>
+            </div>
+            <p class="text-[11px] text-[#444746] bg-[#F8FAFD] p-3 rounded-xl border border-[#E0E3E7]">
+              Sesuai SDD Use Case 1: Sistem memvalidasi angka non-negatif dan memperbarui kuota batas sewa proyek secara real-time.
+            </p>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746] hover:bg-[#EDF2FA]">Batal</button>
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Simpan Stok Opname</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function submitStokOpname(e, itemId) {
+      e.preventDefault();
+      const item = state.inventory.find(i => i.id === itemId);
+      const bagus = parseInt(document.getElementById('opname-bagus').value, 10);
+      const rusak = parseInt(document.getElementById('opname-rusak').value, 10);
+      const gudang = document.getElementById('opname-gudang').value;
+      if (isNaN(bagus) || isNaN(rusak) || bagus < 0 || rusak < 0) {
+        showSnackbar('Format data kuantitas salah (harus angka positif).', 'error');
+        return;
+      }
+      item.bagus = bagus;
+      item.rusak = rusak;
+      item.total = bagus + rusak;
+      item.gudang = gudang;
+      closeModal();
+      render();
+      showSnackbar('Data Stok Berhasil Diperbarui!');
+    }
+
+    function repairItem(itemId) {
+      const item = state.inventory.find(i => i.id === itemId);
+      if (!item || item.rusak <= 0) return;
+      item.bagus += item.rusak;
+      item.rusak = 0;
+      render();
+      showSnackbar(`Perbaikan ${item.nama} selesai (QC OK). Semua unit kembali siap sewa.`);
+    }
+
+    function openAddInventoryModal() {
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Tambah Master Barang Baru</h3>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <form onsubmit="submitNewInventory(event)" class="space-y-3.5 mt-4">
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Nama Perlengkapan Pesta</label>
+              <input id="new-item-nama" type="text" required placeholder="Misal: Tenda Roder Transparan 10×15m" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Kategori (ENUM)</label>
+                <select id="new-item-kat" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm capitalize">
+                  <option value="tenda">tenda</option>
+                  <option value="kursi">kursi</option>
+                  <option value="meja">meja</option>
+                  <option value="kain">kain</option>
+                  <option value="panggung">panggung</option>
+                  <option value="blower">blower</option>
+                  <option value="ac">ac</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Gudang Penempatan</label>
+                <select id="new-item-gdg" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm">
+                  ${state.warehouses.map(w => `<option value="${w.name}">${w.name}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Jumlah Stok Awal</label>
+                <input id="new-item-stok" type="number" min="1" required value="20" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Harga Sewa (Rp)</label>
+                <input id="new-item-harga" type="number" min="1000" required value="500000" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+              </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746]">Batal</button>
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Simpan Barang</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function submitNewInventory(e) {
+      e.preventDefault();
+      const nama = document.getElementById('new-item-nama').value.trim();
+      const kategori = document.getElementById('new-item-kat').value;
+      const gudang = document.getElementById('new-item-gdg').value;
+      const stok = parseInt(document.getElementById('new-item-stok').value, 10);
+      const harga = parseInt(document.getElementById('new-item-harga').value, 10);
+      const newId = kategori.slice(0, 2).toUpperCase() + '-' + Math.floor(100 + Math.random() * 899);
+
+      state.inventory.unshift({
+        id: newId,
+        nama,
+        kategori,
+        total: stok,
+        bagus: stok,
+        rusak: 0,
+        terkunci: 0,
+        harga,
+        satuan: 'Unit/hari',
+        gudang,
+        metode: 'LIFO'
+      });
+      closeModal();
+      render();
+      showSnackbar(`Master barang "${nama}" (#${newId}) berhasil ditambahkan!`);
+    }
+
+    function exportInventoryCSV() {
+      const headers = ['ID_Barang', 'Nama_Barang', 'Kategori', 'Gudang', 'Stok_Total', 'Kondisi_Bagus', 'Terkunci', 'Rusak', 'Harga_Sewa'];
+      const rows = state.inventory.map(i => [i.id, `"${i.nama}"`, i.kategori, `"${i.gudang}"`, i.total, i.bagus, i.terkunci, i.rusak, i.harga].join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Laporan_Inventaris_CV_Darul_2026.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showSnackbar('Laporan Inventaris (CSV/Excel) berhasil diunduh!');
+    }
+
+    // =========================================================================
+    // 9. SCHEDULE & COORDINATIONS VIEW (GOOGLE CALENDAR INSPIRED)
+    // =========================================================================
+    function renderScheduleView() {
+      const days = [
+        { key: 'Sen 12', dName: 'SEN', dNum: '12' },
+        { key: 'Sel 13', dName: 'SEL', dNum: '13' },
+        { key: 'Rab 14', dName: 'RAB', dNum: '14' },
+        { key: 'Kam 15', dName: 'KAM', dNum: '15' },
+        { key: 'Jum 16', dName: 'JUM', dNum: '16' },
+        { key: 'Sab 17', dName: 'SAB', dNum: '17' }
+      ];
+      const daySchedules = state.schedules.filter(s => s.day === state.selectedScheduleDay);
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Jadwal Tugas & Koordinasi Lapangan</h1>
+              <p class="text-sm text-[#444746]">Sinkronisasi jadwal loading gudang, pemasangan dekorasi, dan pembongkaran acara.</p>
+            </div>
+            ${state.currentRole !== 'kru' ? `
+              <button onclick="openNewScheduleModal()" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px]">event_available</span>
+                Buat Jadwal Pemasangan
+              </button>
+            ` : `
+              <button onclick="openDepartureQCModal()" class="px-4 py-2 rounded-full bg-[#006A6A] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px]">fact_check</span>
+                Verifikasi Keberangkatan QC
+              </button>
+            `}
+          </div>
+
+          <!-- Google Calendar-Style Weekly Day Selector -->
+          <div class="m3-card p-4">
+            <div class="flex items-center justify-between mb-3 px-1">
+              <span class="font-display font-semibold text-sm text-[#1F1F1F]">Juni / Juli 2026</span>
+              <span class="text-xs text-[#0B57D0] font-medium">Pilih Hari Operasional</span>
+            </div>
+            <div class="grid grid-cols-6 gap-2">
+              ${days.map(d => {
+                const active = state.selectedScheduleDay === d.key;
+                return `
+                  <button onclick="state.selectedScheduleDay = '${d.key}'; render();" class="py-3 rounded-2xl flex flex-col items-center justify-center transition border ${active ? 'bg-[#0B57D0] text-white border-[#0B57D0] shadow-xs' : 'bg-[#F8FAFD] text-[#1F1F1F] border-[#E0E3E7] hover:bg-[#EDF2FA]'}">
+                    <span class="text-[10px] font-semibold tracking-wider ${active ? 'text-[#C2E7FF]' : 'text-[#444746]'}">${d.dName}</span>
+                    <span class="font-display text-lg font-bold mt-0.5">${d.dNum}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Daily Agenda List -->
+          <div class="space-y-3">
+            <h2 class="font-display font-semibold text-sm text-[#444746] px-1">Tugas Hari Terpilih (${state.selectedScheduleDay})</h2>
+            ${daySchedules.length ? daySchedules.map(sch => {
+              const badgeStyle = sch.status === 'Berlangsung'
+                ? 'bg-[#E0F2FE] text-[#0369A1]'
+                : sch.status === 'Selesai'
+                ? 'bg-[#E6F4EA] text-[#137333]'
+                : 'bg-[#EDF2FA] text-[#444746]';
+              return `
+                <div class="m3-card m3-card-hover p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 ${sch.status === 'Berlangsung' ? 'border-l-[#0B57D0]' : sch.status === 'Selesai' ? 'border-l-[#188038]' : 'border-l-[#747775]'}">
+                  <div class="space-y-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <span class="text-xs font-bold text-[#0B57D0]">${sch.time} WIB</span>
+                      <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${badgeStyle}">${sch.status}</span>
+                      <span class="text-xs font-medium px-2.5 py-0.5 rounded-md bg-[#F8FAFD] border border-[#E0E3E7] text-[#1F1F1F]">${sch.type}</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-base text-[#1F1F1F]">${sch.title}</h3>
+                    <p class="text-xs text-[#444746] flex items-center gap-3">
+                      <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[15px]">location_on</span>${sch.venue}</span>
+                      <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[15px]">groups</span>${sch.kru}</span>
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    ${state.currentRole === 'kru' ? `
+                      <button onclick="openDepartureQCModal()" class="px-4 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Detail & LIFO Picking</button>
+                    ` : `
+                      <button onclick="openOrderTrackingModal('${sch.orderId}')" class="px-4 py-2 rounded-full border border-[#C7D0DC] hover:bg-[#EDF2FA] text-xs font-semibold text-[#0B57D0]">Detail Proyek</button>
+                    `}
+                  </div>
+                </div>
+              `;
+            }).join('') : `
+              <div class="m3-card p-8 text-center text-sm text-[#444746]">
+                Tidak ada jadwal tugas tercatat pada tanggal ini.
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function openNewScheduleModal() {
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Buat Jadwal Operasional Baru</h3>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <form onsubmit="submitNewSchedule(event)" class="space-y-3.5 mt-4">
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Nama Acara / Proyek</label>
+              <input id="sch-title" type="text" required placeholder="Misal: Resepsi Pernikahan Sinta & Rama" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Hari Jadwal</label>
+                <select id="sch-day" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm">
+                  <option value="Rab 14">Rab 14</option>
+                  <option value="Kam 15">Kam 15</option>
+                  <option value="Jum 16">Jum 16</option>
+                  <option value="Sab 17">Sab 17</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Jenis Aktivitas</label>
+                <select id="sch-type" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm">
+                  <option value="Loading">Loading Gudang</option>
+                  <option value="Pemasangan">Pemasangan Dekorasi</option>
+                  <option value="Pembongkaran">Pembongkaran</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Lokasi Venue</label>
+              <input id="sch-venue" type="text" required placeholder="Misal: Gedung Sudirman Grand Ballroom" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Penugasan Tim Kru</label>
+              <input id="sch-kru" type="text" required value="Kru Lapangan 04 (5 Orang)" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746]">Batal</button>
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Simpan & Kirim Notif WA</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function submitNewSchedule(e) {
+      e.preventDefault();
+      const day = document.getElementById('sch-day').value;
+      state.schedules.unshift({
+        id: 'JDW-' + Math.floor(10 + Math.random() * 89),
+        day,
+        time: '08:00 - 13:00',
+        title: document.getElementById('sch-title').value,
+        venue: document.getElementById('sch-venue').value,
+        type: document.getElementById('sch-type').value,
+        status: 'Mendatang',
+        kru: document.getElementById('sch-kru').value,
+        orderId: 'ORD-992'
+      });
+      state.selectedScheduleDay = day;
+      closeModal();
+      render();
+      showSnackbar('Jadwal baru tersimpan & notifikasi broadcast terkirim ke kru!');
+    }
+
+    // =========================================================================
+    // 10. FLEET GPS LIVE TRACKING (GOOGLE MAPS STYLE)
+    // =========================================================================
+    function renderFleetTrackingView() {
+      const selected = state.fleet.find(f => f.id === state.selectedTruckId) || state.fleet[0];
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Monitoring GPS Live Armada</h1>
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-[#E6F4EA] text-[#137333]">
+                  <span class="w-2 h-2 rounded-full bg-[#188038] animate-ping"></span>
+                  LIVE MONITORING
+                </span>
+              </div>
+              <p class="text-sm text-[#444746]">Sinkronisasi koordinat satelit GPS truk operasional setiap 10–15 detik (SDD Bab 4.1).</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="state.mapSatelliteMode = !state.mapSatelliteMode; render();" class="px-4 py-2 rounded-full bg-white border border-[#C7D0DC] hover:bg-[#EDF2FA] text-xs font-semibold text-[#1F1F1F] inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px] text-[#0B57D0]">layers</span>
+                ${state.mapSatelliteMode ? 'Mode Peta Standar' : 'Mode Satelit'}
+              </button>
+              <button onclick="refreshFleetCoordinates()" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[18px]">refresh</span>
+                Refresh GPS
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Left Driver List (From Monitoring GPS Screenshot) -->
+            <div class="lg:col-span-4 space-y-3">
+              <div class="m3-card p-4">
+                <h2 class="font-display font-semibold text-sm text-[#1F1F1F] mb-3">Daftar Pengemudi & Armada (${state.fleet.length})</h2>
+                <div class="space-y-2.5">
+                  ${state.fleet.map(tr => {
+                    const isSel = tr.id === selected.id;
+                    const statusBadge = tr.status === 'BERGERAK'
+                      ? 'bg-[#E6F4EA] text-[#137333]'
+                      : tr.status === 'PARKIR'
+                      ? 'bg-[#EDF2FA] text-[#444746]'
+                      : 'bg-[#FEF7E0] text-[#B06000]';
+                    return `
+                      <div onclick="state.selectedTruckId = '${tr.id}'; render();" class="p-3.5 rounded-2xl border cursor-pointer transition ${isSel ? 'bg-[#D3E3FD]/50 border-[#0B57D0]' : 'bg-[#F8FAFD] border-[#E0E3E7] hover:bg-white'}">
+                        <div class="flex items-center justify-between">
+                          <span class="font-display font-bold text-sm text-[#1F1F1F]">${tr.plat} • ${tr.driver}</span>
+                          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${statusBadge}">${tr.status}</span>
+                        </div>
+                        <p class="text-xs text-[#444746] mt-1 truncate">${tr.tujuan}</p>
+                        <div class="flex items-center justify-between text-[11px] text-[#747775] mt-2">
+                          <span>${tr.jenis} (${tr.kapasitas})</span>
+                          <span>Update: ${tr.lastUpdate}</span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Interactive Google Maps Canvas -->
+            <div class="lg:col-span-8 m3-card overflow-hidden flex flex-col">
+              <div class="relative w-full h-[380px] sm:h-[430px] overflow-hidden select-none" style="background:${state.mapSatelliteMode ? '#1B2A38' : '#E8EEF5'}">
+                <!-- Stylized Google Maps Vector Grid, Highways & River -->
+                <svg viewBox="0 0 800 450" class="w-full h-full object-cover">
+                  <!-- Parks / Green Zones -->
+                  <rect x="40" y="30" width="160" height="110" rx="24" fill="${state.mapSatelliteMode ? '#1E3A2F' : '#CEEAD6'}" opacity="0.7"/>
+                  <rect x="560" y="270" width="190" height="130" rx="28" fill="${state.mapSatelliteMode ? '#1E3A2F' : '#CEEAD6'}" opacity="0.7"/>
+                  <!-- River -->
+                  <path d="M 0,340 Q 250,310 420,380 T 800,360" fill="none" stroke="${state.mapSatelliteMode ? '#1E4976' : '#A8C7FA'}" stroke-width="18" opacity="0.8"/>
+                  <!-- Toll Roads & Arterial Streets -->
+                  <path d="M 80,450 L 260,260 L 520,180 L 760,40" fill="none" stroke="${state.mapSatelliteMode ? '#FBBF24' : '#FCD34D'}" stroke-width="8"/>
+                  <path d="M 0,140 L 800,220" fill="none" stroke="${state.mapSatelliteMode ? '#475569' : '#FFFFFF'}" stroke-width="7"/>
+                  <path d="M 320,0 L 380,450" fill="none" stroke="${state.mapSatelliteMode ? '#475569' : '#FFFFFF'}" stroke-width="6"/>
+                  <!-- Active Route Line for Selected Truck -->
+                  <path d="M 210,310 Q 340,260 448,216 T 610,120" fill="none" stroke="#0B57D0" stroke-width="5" stroke-dasharray="10 6"/>
+                  <!-- Warehouse Pin -->
+                  <g transform="translate(185, 290)">
+                    <rect x="0" y="0" width="115" height="26" rx="13" fill="#041E49"/>
+                    <text x="14" y="17" font-size="11" font-weight="600" fill="#FFFFFF">Gudang Utama</text>
+                  </g>
+                  <!-- Destination Pin -->
+                  <g transform="translate(570, 95)">
+                    <rect x="0" y="0" width="128" height="26" rx="13" fill="#188038"/>
+                    <text x="14" y="17" font-size="11" font-weight="600" fill="#FFFFFF">Lokasi Venue</text>
+                  </g>
+                </svg>
+
+                <!-- Dynamic Truck Pins -->
+                ${state.fleet.map(tr => {
+                  const isSel = tr.id === selected.id;
+                  return `
+                    <button onclick="state.selectedTruckId = '${tr.id}'; render();"
+                      style="left:${tr.x}%; top:${tr.y}%;"
+                      class="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none">
+                      ${tr.status === 'BERGERAK' ? `<span class="absolute inset-0 rounded-full bg-[#0B57D0] gps-pulse"></span>` : ''}
+                      <div class="relative px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 border-2 ${isSel ? 'bg-[#0B57D0] text-white border-white scale-110' : 'bg-white text-[#1F1F1F] border-[#0B57D0]'} transition">
+                        <span class="material-symbols-rounded text-[16px]">local_shipping</span>
+                        <span class="text-[11px] font-bold whitespace-nowrap">${tr.plat}</span>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+
+                <!-- Google Maps Bottom Info Card Overlay -->
+                <div class="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-[#E0E3E7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-[#D3E3FD] text-[#0B57D0] flex items-center justify-center shrink-0">
+                      <span class="material-symbols-rounded">navigation</span>
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-display font-bold text-sm text-[#1F1F1F]">${selected.plat} — ${selected.driver}</span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#E6F4EA] text-[#137333]">ETA: ${selected.eta}</span>
+                      </div>
+                      <p class="text-xs text-[#444746] mt-0.5">Tujuan: <strong>${selected.tujuan}</strong> • Kecepatan: ${selected.speed}</p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-semibold text-[#0B57D0] bg-[#EDF2FA] px-3 py-1.5 rounded-full self-start sm:self-center">
+                    Proyek: ${selected.projectNo}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshFleetCoordinates() {
+      state.fleet.forEach(tr => {
+        if (tr.status === 'BERGERAK') {
+          tr.x = Math.min(78, Math.max(22, tr.x + (Math.random() > 0.5 ? 3 : -2)));
+          tr.y = Math.min(72, Math.max(20, tr.y + (Math.random() > 0.5 ? -2 : 2)));
+          tr.lastUpdate = 'Baru saja';
+        }
+      });
+      render();
+      showSnackbar('Koordinat GPS seluruh armada berhasil disinkronisasi!', 'gps_fixed');
+    }
+
+    // =========================================================================
+    // 11. FINANCE, INVOICES & CREW PAYROLL VIEW
+    // =========================================================================
+    function renderFinanceView() {
+      const sisaLimit = state.operationalCash.weeklyLimit - state.operationalCash.used;
+      const totalPayroll = state.payroll.reduce((s, p) => s + p.baseSalary + p.bonus, 0);
+
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Keuangan, Invoice Klien & Payroll Kru</h1>
+              <p class="text-sm text-[#444746]">Pengelolaan kas operasional mingguan, tagihan Wedding Organizer, serta kalkulasi gaji & insentif kru.</p>
+            </div>
+            <button onclick="openAddCashExpenseModal()" class="px-4 py-2 rounded-full bg-[#0B57D0] hover:bg-[#0842A0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+              <span class="material-symbols-rounded text-[18px]">add_card</span>
+              Catat Pengeluaran Kas
+            </button>
+          </div>
+
+          <!-- Top Cards: Kas Operasional Mingguan + Total Payroll -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-7 m3-card p-6">
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="text-xs font-semibold text-[#444746] uppercase tracking-wider">Kas Operasional Mingguan</span>
+                  <h2 class="font-display text-3xl font-bold text-[#1F1F1F] mt-1">${formatRupiah(state.operationalCash.weeklyLimit)}</h2>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-[#D3E3FD] text-[#0B57D0] flex items-center justify-center">
+                  <span class="material-symbols-rounded">account_balance_wallet</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4 my-4">
+                <div class="p-3.5 rounded-2xl bg-[#FCE8E6]/60 border border-[#F2B8B5]">
+                  <span class="text-xs text-[#8C1D18] block">Terpakai Minggu Ini</span>
+                  <span class="font-display text-lg font-bold text-[#B3261E]">${formatRupiah(state.operationalCash.used)}</span>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-[#E6F4EA]/70 border border-[#CEEAD6]">
+                  <span class="text-xs text-[#137333] block">Sisa Limit Kas</span>
+                  <span class="font-display text-lg font-bold text-[#137333]">${formatRupiah(sisaLimit)}</span>
+                </div>
+              </div>
+              <div class="space-y-1.5 pt-2 border-t border-[#E0E3E7]">
+                <p class="text-[11px] font-semibold text-[#444746]">Rincian Pengeluaran Terakhir:</p>
+                ${state.operationalCash.expenses.slice(0, 3).map(ex => `
+                  <div class="flex items-center justify-between text-xs py-1">
+                    <span class="text-[#1F1F1F]">${ex.ket} <span class="text-[#747775]">(${ex.tgl})</span></span>
+                    <span class="font-semibold text-[#B3261E]">-${formatRupiah(ex.nominal)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 m3-card p-6 bg-[#041E49] text-white border-[#041E49] flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-semibold text-[#A8C7FA] uppercase tracking-wider">Total Payroll Periode Ini</span>
+                <h2 class="font-display text-3xl font-bold mt-1">${formatRupiah(totalPayroll)}</h2>
+                <p class="text-xs text-[#C2E7FF] mt-1">Mencakup gaji pokok & insentif bonus proyek untuk ${state.payroll.length} personel lapangan aktif.</p>
+              </div>
+              <div class="mt-6 pt-4 border-t border-white/15 flex items-center justify-between">
+                <span class="text-xs text-[#A8C7FA]">Otomatis sinkron dengan input bonus di bawah</span>
+                <button onclick="showSnackbar('Slip gaji digital seluruh kru berhasil diterbitkan!')" class="px-4 py-2 rounded-full bg-[#C2E7FF] text-[#001D35] text-xs font-bold hover:bg-white transition">
+                  Proses Transfer Gaji
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Gaji Kru Lapangan (Interactive Bonus Input from Payroll Screenshot) -->
+          <div class="m3-card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Daftar Gaji Kru Lapangan & Insentif Proyek</h2>
+                <p class="text-xs text-[#444746]">Ubah nominal Insentif Bonus Proyek secara langsung untuk menghitung total penerimaan kru.</p>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#EDF2FA] text-[#0B57D0]">${state.payroll.length} Personel</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-[#E0E3E7] text-[11px] font-semibold text-[#444746] uppercase">
+                    <th class="py-3 px-3">Nama Kru</th>
+                    <th class="py-3 px-3">Jabatan</th>
+                    <th class="py-3 px-3">Base Salary</th>
+                    <th class="py-3 px-3 text-center">Job Selesai</th>
+                    <th class="py-3 px-3">Insentif Bonus Proyek (Rp)</th>
+                    <th class="py-3 px-3 text-right">Total Diterima</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#F1F3F4] text-sm">
+                  ${state.payroll.map((p, idx) => `
+                    <tr class="hover:bg-[#F8FAFD]">
+                      <td class="py-3.5 px-3 font-semibold text-[#1F1F1F]">${p.nama}</td>
+                      <td class="py-3.5 px-3 text-xs text-[#444746]">${p.jabatan}</td>
+                      <td class="py-3.5 px-3 text-xs font-medium">${formatRupiah(p.baseSalary)}</td>
+                      <td class="py-3.5 px-3 text-center">
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#E8F0FE] text-[#0B57D0]">${p.jobs}</span>
+                      </td>
+                      <td class="py-3.5 px-3">
+                        <input type="number" step="50000" min="0" value="${p.bonus}"
+                          onchange="state.payroll[${idx}].bonus = Math.max(0, parseInt(this.value || 0, 10)); render(); showSnackbar('Insentif bonus ${p.nama} diperbarui!');"
+                          class="w-36 h-9 px-3 rounded-xl border border-[#C7D0DC] focus:border-[#0B57D0] text-xs font-semibold outline-none" />
+                      </td>
+                      <td class="py-3.5 px-3 text-right font-display font-bold text-[#137333]">
+                        ${formatRupiah(p.baseSalary + p.bonus)}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Daftar Invoice Tagihan Klien (SDD Use Case 2) -->
+          <div class="m3-card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Daftar Invoice Tagihan Klien / WO</h2>
+                <p class="text-xs text-[#444746]">Verifikasi pembayaran masuk & cetak dokumen tagihan PDF resmi.</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-[#E0E3E7] text-[11px] font-semibold text-[#444746] uppercase">
+                    <th class="py-3 px-3">Invoice ID</th>
+                    <th class="py-3 px-3">Wedding Organizer</th>
+                    <th class="py-3 px-3">Tanggal</th>
+                    <th class="py-3 px-3">Total Tagihan</th>
+                    <th class="py-3 px-3">Status</th>
+                    <th class="py-3 px-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#F1F3F4] text-sm">
+                  ${state.invoices.map(inv => {
+                    const net = inv.total - inv.diskon;
+                    const lunas = inv.statusBayar === 'Lunas';
+                    return `
+                      <tr class="hover:bg-[#F8FAFD]">
+                        <td class="py-3.5 px-3 font-bold text-[#0B57D0]">#${inv.id}</td>
+                        <td class="py-3.5 px-3 font-medium text-[#1F1F1F]">${inv.wo} <span class="text-xs text-[#747775]">(#${inv.orderId})</span></td>
+                        <td class="py-3.5 px-3 text-xs text-[#444746]">${inv.tanggal}</td>
+                        <td class="py-3.5 px-3 font-display font-bold">${formatRupiah(net)}</td>
+                        <td class="py-3.5 px-3">
+                          <span class="text-xs font-semibold px-3 py-1 rounded-full ${lunas ? 'bg-[#E6F4EA] text-[#137333]' : 'bg-[#FEF7E0] text-[#B06000]'}">
+                            ${inv.statusBayar}
+                          </span>
+                        </td>
+                        <td class="py-3.5 px-3 text-right space-x-1.5">
+                          <button onclick="openInvoiceDetailModal('${inv.id}')" class="px-3 py-1.5 rounded-full border border-[#C7D0DC] hover:bg-[#EDF2FA] text-xs font-semibold text-[#0B57D0]">
+                            Detail & PDF
+                          </button>
+                          ${!lunas ? `
+                            <button onclick="markInvoicePaid('${inv.id}')" class="px-3 py-1.5 rounded-full bg-[#188038] text-white text-xs font-semibold">
+                              Verifikasi Lunas
+                            </button>
+                          ` : ''}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function markInvoicePaid(invId) {
+      const inv = state.invoices.find(i => i.id === invId);
+      if (!inv) return;
+      inv.statusBayar = 'Lunas';
+      inv.metode = 'Bank Transfer (Terverifikasi)';
+      render();
+      showSnackbar(`Pembayaran Invoice #${invId} berhasil diverifikasi LUNAS!`);
+    }
+
+    function openAddCashExpenseModal() {
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Catat Pengeluaran Kas Operasional</h3>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <form onsubmit="submitCashExpense(event)" class="space-y-4 mt-4">
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Keterangan Pengeluaran</label>
+              <input id="kas-ket" type="text" required placeholder="Misal: BBM & Tol Pengiriman ICE BSD" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Nominal (Rp)</label>
+              <input id="kas-nom" type="number" min="1000" required value="350000" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm font-semibold" />
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746]">Batal</button>
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Simpan Pengeluaran</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function submitCashExpense(e) {
+      e.preventDefault();
+      const ket = document.getElementById('kas-ket').value.trim();
+      const nom = parseInt(document.getElementById('kas-nom').value, 10);
+      state.operationalCash.used += nom;
+      state.operationalCash.expenses.unshift({ id: 'KAS-' + Date.now(), ket, nominal: nom, tgl: 'Baru saja' });
+      closeModal();
+      render();
+      showSnackbar('Pengeluaran kas operasional berhasil dicatat!');
+    }
+
+    function openInvoiceDetailModal(invId) {
+      const inv = state.invoices.find(i => i.id === invId) || state.invoices[0];
+      const ord = state.orders.find(o => o.id === inv.orderId) || state.orders[0];
+      const net = inv.total - inv.diskon;
+
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-lg w-full p-6 shadow-2xl border border-[#E0E3E7] max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between pb-4 border-b border-[#E0E3E7]">
+            <div>
+              <span class="text-xs font-bold text-[#0B57D0]">DOKUMEN TAGIHAN RESMI</span>
+              <h3 class="font-display font-bold text-xl text-[#1F1F1F]">Invoice #${inv.id}</h3>
+            </div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full ${inv.statusBayar === 'Lunas' ? 'bg-[#E6F4EA] text-[#137333]' : 'bg-[#FEF7E0] text-[#B06000]'}">
+              ${inv.statusBayar.toUpperCase()}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 my-4 text-xs bg-[#F8FAFD] p-4 rounded-2xl border border-[#E0E3E7]">
+            <div>
+              <span class="text-[#444746] block">Ditagihkan Kepada:</span>
+              <strong class="text-sm text-[#1F1F1F]">${inv.wo}</strong>
+              <span class="block text-[#747775] mt-0.5">Client ID: ${inv.clientId}</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[#444746] block">Tanggal Invoice: <strong>${inv.tanggal}</strong></span>
+              <span class="text-[#444746] block mt-0.5">Metode: <strong>${inv.metode}</strong></span>
+              <span class="text-[#444746] block mt-0.5">Rekening: <strong>BCA 7720-8819-00 (CV Darul)</strong></span>
+            </div>
+          </div>
+
+          <div class="space-y-2 my-4">
+            <p class="text-xs font-semibold text-[#444746]">Daftar Layanan & Barang (#${ord.id}):</p>
+            ${ord.items.map(it => `
+              <div class="flex items-center justify-between py-2 border-b border-[#F1F3F4] text-xs">
+                <div>
+                  <p class="font-semibold text-[#1F1F1F]">${it.nama}</p>
+                  <p class="text-[#747775]">${it.qty} × ${formatRupiah(it.harga)}</p>
+                </div>
+                <span class="font-bold text-[#1F1F1F]">${formatRupiah(it.qty * it.harga)}</span>
+              </div>
+            `).join('')}
+            <div class="pt-2 flex justify-between text-xs text-[#444746]">
+              <span>Diskon Kemitraan</span>
+              <span>-${formatRupiah(inv.diskon)}</span>
+            </div>
+            <div class="pt-1 flex justify-between font-display font-bold text-base text-[#0B57D0]">
+              <span>Total Tagihan</span>
+              <span>${formatRupiah(net)}</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-end gap-2 pt-4 border-t border-[#E0E3E7]">
+            <button onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746] hover:bg-[#EDF2FA]">Tutup</button>
+            ${state.currentRole === 'klien' && inv.statusBayar !== 'Lunas' ? `
+              <button onclick="markInvoicePaid('${inv.id}'); closeModal();" class="px-4 py-2 rounded-full bg-[#188038] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                <span class="material-symbols-rounded text-[16px]">upload_file</span>
+                Unggah Bukti Transfer
+              </button>
+            ` : ''}
+            <button onclick="window.print()" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+              <span class="material-symbols-rounded text-[16px]">download</span>
+              Cetak / Unduh PDF Invoice
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    // =========================================================================
+    // 12. AUDIT LOG & NOTIFICATIONS VIEW (MANAJER SCREENSHOT)
+    // =========================================================================
+    function renderAuditLogView() {
+      const urgentCount = state.auditLogs.filter(l => l.type === 'URGENT').length;
+      const list = state.auditFilter === 'URGENT'
+        ? state.auditLogs.filter(l => l.type === 'URGENT')
+        : state.auditLogs;
+
+      return `
+        <div class="space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Log Aktivitas & Notifikasi Sistem</h1>
+              <p class="text-sm text-[#444746]">Pemantauan real-time operasional sistem, pembayaran WO, dan laporan kerusakan kru.</p>
+            </div>
+            <button onclick="state.auditLogs = []; render(); showSnackbar('Log notifikasi dibersihkan.');" class="px-4 py-2 rounded-full bg-white border border-[#C7D0DC] hover:bg-[#FCE8E6] hover:text-[#B3261E] text-xs font-semibold inline-flex items-center gap-1.5 transition">
+              <span class="material-symbols-rounded text-[18px]">delete_sweep</span>
+              Bersihkan Log Notifikasi
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div onclick="state.auditFilter = 'Semua'; render();" class="m3-card p-4 cursor-pointer ${state.auditFilter === 'Semua' ? 'ring-2 ring-[#0B57D0]' : ''}">
+              <span class="text-xs text-[#444746]">Total Log</span>
+              <p class="font-display text-2xl font-bold text-[#1F1F1F] mt-1">${state.auditLogs.length}</p>
+            </div>
+            <div onclick="state.auditFilter = 'URGENT'; render();" class="m3-card p-4 bg-[#FCE8E6]/50 border-[#F2B8B5] cursor-pointer ${state.auditFilter === 'URGENT' ? 'ring-2 ring-[#B3261E]' : ''}">
+              <span class="text-xs text-[#B3261E] font-semibold">Urgent Alert</span>
+              <p class="font-display text-2xl font-bold text-[#B3261E] mt-1">${urgentCount}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            ${list.map(log => `
+              <div class="m3-card p-4 flex items-start gap-4 ${log.type === 'URGENT' ? 'bg-[#FCE8E6]/40 border-[#F2B8B5]' : ''}">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${log.type === 'URGENT' ? 'bg-[#B3261E] text-white' : 'bg-[#D3E3FD] text-[#0B57D0]'}">
+                  <span class="material-symbols-rounded">${log.type === 'URGENT' ? 'report' : 'receipt_long'}</span>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider ${log.type === 'URGENT' ? 'text-[#B3261E]' : 'text-[#0B57D0]'}">${log.type}</span>
+                    <span class="text-xs text-[#747775]">${log.time}</span>
+                  </div>
+                  <h3 class="font-display font-semibold text-sm text-[#1F1F1F] mt-0.5">${log.title}</h3>
+                  <p class="text-xs text-[#444746] mt-1">${log.desc}</p>
+                </div>
+              </div>
+            `).join('') || `<div class="m3-card p-8 text-center text-sm text-[#444746]">Tidak ada catatan log notifikasi saat ini.</div>`}
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 13. FIELD CREW (KRU LAPANGAN) VIEWS (ALIGNED WITH KRU SCREENSHOTS)
+    // =========================================================================
+    function renderKruDashboard() {
+      return `
+        <div class="space-y-6">
+          <div>
+            <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Selamat Datang, Ahmad Supriadi</h1>
+            <p class="text-sm text-[#444746]">Kru Lapangan Senior • ID EMP-026-004 • Hub Padalarang & Cikarang</p>
+          </div>
+
+          <!-- Tugas Utama Hari Ini -->
+          <div class="m3-card p-6 bg-gradient-to-r from-[#041E49] to-[#0B57D0] text-white border-none">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full">Tugas Utama Hari Ini</span>
+              <span class="text-xs font-semibold bg-[#C2E7FF] text-[#001D35] px-3 py-1 rounded-full">Status: ${state.crewChecklist.stepStatus}</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold">Pernikahan Risa & Aldi — Hotel Mulia, Senayan</h2>
+            <p class="text-xs sm:text-sm text-[#D3E3FD] mt-1">08:00 WIB • Kru Lapangan 04 (5 Orang) • Armada: B 1234 CD</p>
+
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button onclick="openDepartureQCModal()" class="px-5 py-2.5 rounded-full bg-white text-[#041E49] font-semibold text-xs inline-flex items-center gap-2 hover:bg-[#D3E3FD] transition">
+                <span class="material-symbols-rounded text-[18px]">fact_check</span>
+                Verifikasi Keberangkatan & LIFO
+              </button>
+              <button onclick="setTab('damage_report')" class="px-5 py-2.5 rounded-full bg-[#B3261E] text-white font-semibold text-xs inline-flex items-center gap-2 hover:bg-[#8C1D18] transition">
+                <span class="material-symbols-rounded text-[18px]">report_problem</span>
+                Lapor Kerusakan / Cacat
+              </button>
+              <button onclick="setTab('fleet')" class="px-5 py-2.5 rounded-full bg-white/15 text-white font-semibold text-xs inline-flex items-center gap-2 hover:bg-white/25 transition">
+                <span class="material-symbols-rounded text-[18px]">near_me</span>
+                Rute Live GPS
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress Tahapan Kerja Lapangan (Loading -> Pemasangan -> Pembongkaran) -->
+          <div class="m3-card p-6">
+            <h3 class="font-display font-semibold text-base text-[#1F1F1F] mb-4">Status Pekerjaan Lapangan (#ORD-042)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              ${['Loading', 'Pemasangan', 'Pembongkaran'].map((step, i) => {
+                const active = state.crewChecklist.stepStatus === step;
+                return `
+                  <div onclick="state.crewChecklist.stepStatus = '${step}'; render(); showSnackbar('Status kerja lapangan diubah ke: ${step}');"
+                    class="p-4 rounded-2xl border cursor-pointer transition ${active ? 'bg-[#D3E3FD]/60 border-[#0B57D0]' : 'bg-[#F8FAFD] border-[#E0E3E7] hover:bg-white'}">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-xs font-bold text-[#0B57D0]">Tahap ${i + 1}</span>
+                      <span class="material-symbols-rounded text-[20px] ${active ? 'text-[#0B57D0]' : 'text-[#747775]'}">${active ? 'check_circle' : 'radio_button_unchecked'}</span>
+                    </div>
+                    <p class="font-display font-semibold text-base text-[#1F1F1F]">${step}</p>
+                    <p class="text-xs text-[#444746] mt-0.5">${active ? 'Sedang berlangsung saat ini' : 'Klik untuk konfirmasi tahap ini'}</p>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Tugas Selesai Minggu Ini -->
+          <div class="m3-card p-6">
+            <h3 class="font-display font-semibold text-base text-[#1F1F1F] mb-3">Tugas Selesai Minggu Ini</h3>
+            <div class="divide-y divide-[#F1F3F4]">
+              <div class="py-3 flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-sm text-[#1F1F1F]">Instalasi Tenda VIP — Klub Golf Sentul</p>
+                  <p class="text-xs text-[#444746]">12 Juni 2026 • Dokumentasi Foto Terunggah</p>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#E6F4EA] text-[#137333]">Selesai</span>
+              </div>
+              <div class="py-3 flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-sm text-[#1F1F1F]">Bongkar Panggung CSR — Plaza Indonesia</p>
+                  <p class="text-xs text-[#444746]">10 Juni 2026 • QC Kembali Gudang OK</p>
+                </div>
+                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#E6F4EA] text-[#137333]">Selesai</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openDepartureQCModal() {
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <div>
+              <span class="text-xs font-bold text-[#006A6A]">PRJ-2026-089 • PLAT B 1234 CD</span>
+              <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Verifikasi Keberangkatan Armada</h3>
+            </div>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <div class="space-y-3 my-4">
+            <p class="text-xs text-[#444746]">Selesaikan Standard QC Checklist akhir untuk mengunci status pengiriman armada:</p>
+            <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-[#E0E3E7] bg-[#F8FAFD] cursor-pointer">
+              <input type="checkbox" ${state.crewChecklist.lifoChecked ? 'checked' : ''} onchange="state.crewChecklist.lifoChecked = this.checked" class="w-4 h-4 accent-[#0B57D0]" />
+              <span class="text-xs font-medium text-[#1F1F1F]">Semua barang di manifes sudah masuk truk (Metode LIFO)</span>
+            </label>
+            <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-[#E0E3E7] bg-[#F8FAFD] cursor-pointer">
+              <input type="checkbox" ${state.crewChecklist.qcChecked ? 'checked' : ''} onchange="state.crewChecklist.qcChecked = this.checked" class="w-4 h-4 accent-[#0B57D0]" />
+              <span class="text-xs font-medium text-[#1F1F1F]">Kondisi fisik barang sudah dicek & lolos QC</span>
+            </label>
+            <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-[#E0E3E7] bg-[#F8FAFD] cursor-pointer">
+              <input type="checkbox" ${state.crewChecklist.suratJalanChecked ? 'checked' : ''} onchange="state.crewChecklist.suratJalanChecked = this.checked" class="w-4 h-4 accent-[#0B57D0]" />
+              <span class="text-xs font-medium text-[#1F1F1F]">Surat jalan fisik telah diterima oleh supir</span>
+            </label>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746]">Batal</button>
+            <button onclick="closeModal(); showSnackbar('Keberangkatan armada B 1234 CD terverifikasi & GPS aktif!');" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">
+              Konfirmasi Berangkat
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderDamageReportView() {
+      return `
+        <div class="max-w-2xl mx-auto space-y-5">
+          <div>
+            <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Form Pelaporan Kerusakan / Kehilangan</h1>
+            <p class="text-sm text-[#444746]">Pastikan data yang dilaporkan sesuai dengan kondisi aktual di lapangan. Laporan otomatis terkirim ke Manajer.</p>
+          </div>
+
+          <form onsubmit="submitDamageReport(event)" class="m3-card p-6 space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-[#1F1F1F] mb-1.5">Pilih Nama Barang dari Inventaris</label>
+              <select id="dmg-item" class="w-full h-11 px-3.5 rounded-xl border border-[#747775] text-sm">
+                ${state.inventory.map(i => `<option value="${i.id}">${i.nama} (#${i.id} — ${i.gudang})</option>`).join('')}
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-[#1F1F1F] mb-1.5">Jumlah Cacat / Hilang</label>
+                <input id="dmg-qty" type="number" min="1" required value="2" class="w-full h-11 px-3.5 rounded-xl border border-[#747775] text-sm font-semibold" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-[#1F1F1F] mb-1.5">Kategori Kondisi Masalah</label>
+                <select id="dmg-cond" class="w-full h-11 px-3.5 rounded-xl border border-[#747775] text-sm">
+                  <option value="Rusak Ringan">Rusak Ringan</option>
+                  <option value="Rusak Berat">Rusak Berat</option>
+                  <option value="Hilang / Kurang">Hilang / Kurang</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-[#1F1F1F] mb-1.5">Kronologi / Keterangan Masalah</label>
+              <textarea id="dmg-desc" rows="3" required placeholder="Tuliskan detail kejadian atau kondisi barang secara rinci..." class="w-full p-3.5 rounded-xl border border-[#747775] text-sm">Rangka penyangga melengkung saat proses pembongkaran di venue acara.</textarea>
+            </div>
+
+            <div class="p-4 rounded-2xl border-2 border-dashed border-[#C7D0DC] bg-[#F8FAFD] text-center">
+              <span class="material-symbols-rounded text-[#0B57D0] text-[30px]">add_a_photo</span>
+              <p class="text-xs font-medium text-[#1F1F1F] mt-1">Foto Bukti Lapangan (Kamera Smartphone / File)</p>
+              <input type="file" accept="image/*" class="mt-2 text-xs text-[#444746]" />
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-full bg-[#B3261E] hover:bg-[#8C1D18] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition">
+              <span class="material-symbols-rounded text-[20px]">send</span>
+              Kirim Laporan ke Manajer
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    function submitDamageReport(e) {
+      e.preventDefault();
+      const itemId = document.getElementById('dmg-item').value;
+      const qty = parseInt(document.getElementById('dmg-qty').value, 10);
+      const cond = document.getElementById('dmg-cond').value;
+      const desc = document.getElementById('dmg-desc').value.trim();
+
+      const item = state.inventory.find(i => i.id === itemId);
+      if (item && qty > 0) {
+        const moved = Math.min(item.bagus, qty);
+        item.bagus -= moved;
+        item.rusak += moved;
+      }
+
+      state.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        type: 'URGENT',
+        title: `LAPORAN KERUSAKAN: ${item ? item.nama : itemId} (${qty} Unit)`,
+        desc: `Kru ${ROLES[state.currentRole].name} melaporkan [${cond}]: ${desc}`,
+        time: 'Baru saja',
+        unread: true
+      });
+
+      setTab('dashboard');
+      showSnackbar('Laporan kerusakan berhasil dikirim ke Manajer & stok diperbarui!', 'warning');
+    }
+
+    // =========================================================================
+    // 14. CLIENT / WEDDING ORGANIZER PORTAL VIEWS (ALIGNED WITH CLIENT SCREENSHOTS)
+    // =========================================================================
+    function renderKlienDashboard() {
+      const myOrders = state.orders.filter(o => o.wo.includes('Citra'));
+      return `
+        <div class="space-y-6">
+          <!-- Hero Banner (From Home Dashboard Client Screenshot) -->
+          <div class="m3-card p-6 sm:p-8 bg-gradient-to-r from-[#041E49] to-[#0B57D0] text-white border-none flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="max-w-xl">
+              <span class="text-xs font-bold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full">Premium Partner • Citra Wedding Organizer</span>
+              <h1 class="font-display text-2xl sm:text-3xl font-bold mt-3">Butuh Perlengkapan Acara Mendadak?</h1>
+              <p class="text-sm text-[#D3E3FD] mt-2">Pesan langsung melalui katalog terintegrasi kami. Tim logistik CV Darul siapkan, kirim, dan pasang dalam waktu 24 jam.</p>
+              <button onclick="setTab('wizard')" class="mt-5 px-6 py-3 rounded-full bg-white text-[#041E49] font-semibold text-sm inline-flex items-center gap-2 hover:bg-[#D3E3FD] transition">
+                <span>Pesan Baru Sekarang</span>
+                <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-center shrink-0">
+              <div class="bg-white/10 backdrop-blur-xs rounded-2xl p-4">
+                <span class="font-display text-2xl font-bold block">42</span>
+                <span class="text-[11px] text-[#D3E3FD]">Total Pesanan</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xs rounded-2xl p-4">
+                <span class="font-display text-2xl font-bold block">38</span>
+                <span class="text-[11px] text-[#D3E3FD]">Event Selesai</span>
+              </div>
+              <div class="bg-white/10 backdrop-blur-xs rounded-2xl p-4">
+                <span class="font-display text-2xl font-bold block">4.9⭐</span>
+                <span class="text-[11px] text-[#D3E3FD]">Rating Mitra</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pesanan Sedang Berjalan -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-display font-semibold text-lg text-[#1F1F1F]">Pesanan Sedang Berjalan</h2>
+              <button onclick="setTab('orders')" class="text-xs font-semibold text-[#0B57D0] hover:underline">Lihat Semua →</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${myOrders.map(ord => `
+                <div class="m3-card m3-card-hover p-5 flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-xs font-bold text-[#0B57D0]">#${ord.id}</span>
+                      ${getStatusBadge(ord.status)}
+                    </div>
+                    <h3 class="font-display font-semibold text-base text-[#1F1F1F] mt-2">${ord.acara}</h3>
+                    <p class="text-xs text-[#444746] mt-1 flex items-center gap-1">
+                      <span class="material-symbols-rounded text-[15px]">calendar_today</span>
+                      ${ord.tglAcara} • ${ord.lokasi}
+                    </p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-[#E0E3E7] flex items-center justify-between">
+                    <span class="font-display font-bold text-sm text-[#1F1F1F]">${formatRupiah(calcOrderTotal(ord))}</span>
+                    <button onclick="openOrderTrackingModal('${ord.id}')" class="px-4 py-1.5 rounded-full bg-[#EDF2FA] hover:bg-[#D3E3FD] text-[#0B57D0] text-xs font-semibold inline-flex items-center gap-1">
+                      <span>Lacak Logistik</span>
+                      <span class="material-symbols-rounded text-[16px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderClientWizardView() {
+      const step = state.clientWizardStep;
+      const wd = state.clientWizardData;
+
+      // Calculate cart items
+      const cartEntries = Object.entries(wd.cart).filter(([_, qty]) => qty > 0);
+      const estTotal = cartEntries.reduce((sum, [id, qty]) => {
+        const item = state.inventory.find(i => i.id === id);
+        return sum + (item ? item.harga * qty : 0);
+      }, 0);
+
+      return `
+        <div class="max-w-4xl mx-auto space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Buat Pesanan Baru (3 Langkah)</h1>
+              <p class="text-sm text-[#444746]">Langkah ${step}/3 — Pemesanan disarankan minimal H-3 untuk menjamin ketersediaan stok.</p>
+            </div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[#D3E3FD] text-[#041E49]">${Math.round((step / 3) * 100)}% Selesai</span>
+          </div>
+
+          <!-- Progress Stepper -->
+          <div class="grid grid-cols-3 gap-2">
+            ${['1. Manifes Acara', '2. Pilih Perlengkapan', '3. Ringkasan & Kirim'].map((label, idx) => `
+              <div onclick="state.clientWizardStep = ${idx + 1}; render();" class="cursor-pointer p-3 rounded-2xl text-center text-xs font-semibold border transition ${step === idx + 1 ? 'bg-[#0B57D0] text-white border-[#0B57D0]' : step > idx + 1 ? 'bg-[#E6F4EA] text-[#137333] border-[#CEEAD6]' : 'bg-white text-[#444746] border-[#E0E3E7]'}">
+                ${label}
+              </div>
+            `).join('')}
+          </div>
+
+          ${step === 1 ? `
+            <div class="m3-card p-6 space-y-4">
+              <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Detail Acara & Lokasi Pengiriman</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-[#444746] mb-1">Tanggal Pelaksanaan Acara</label>
+                  <input type="date" value="${wd.tanggalAcara}" onchange="state.clientWizardData.tanggalAcara = this.value" class="w-full h-11 px-3.5 rounded-xl border border-[#747775] text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#444746] mb-1">Nama Venue / Lokasi Detail Acara</label>
+                  <input type="text" value="${wd.lokasiAcara}" oninput="state.clientWizardData.lokasiAcara = this.value" placeholder="Misal: Ballroom Hotel Ritz Carlton" class="w-full h-11 px-3.5 rounded-xl border border-[#747775] text-sm" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Catatan Khusus Pengiriman (Opsional)</label>
+                <textarea rows="3" oninput="state.clientWizardData.catatan = this.value" class="w-full p-3.5 rounded-xl border border-[#747775] text-sm">${wd.catatan}</textarea>
+              </div>
+              <div class="flex justify-end pt-2">
+                <button onclick="state.clientWizardStep = 2; render();" class="px-6 py-2.5 rounded-full bg-[#0B57D0] text-white text-xs font-semibold inline-flex items-center gap-2">
+                  <span>Lanjut - Pilih Barang Acara</span>
+                  <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+          ` : step === 2 ? `
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${state.inventory.map(item => {
+                  const qty = wd.cart[item.id] || 0;
+                  const avail = Math.max(0, item.bagus - item.terkunci);
+                  return `
+                    <div class="m3-card p-4 flex flex-col justify-between ${qty > 0 ? 'ring-2 ring-[#0B57D0]' : ''}">
+                      <div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#EDF2FA] text-[#0B57D0] capitalize">${item.kategori}</span>
+                          <span class="text-[11px] text-[#137333] font-medium">Tersedia: ${avail}</span>
+                        </div>
+                        <h3 class="font-display font-semibold text-sm text-[#1F1F1F] mt-2">${item.nama}</h3>
+                        <p class="font-display font-bold text-sm text-[#0B57D0] mt-1">${formatRupiah(item.harga)} <span class="text-[11px] font-normal text-[#444746]">/${item.satuan}</span></p>
+                      </div>
+                      <div class="mt-4 flex items-center justify-between bg-[#F8FAFD] p-1.5 rounded-full border border-[#E0E3E7]">
+                        <button onclick="state.clientWizardData.cart['${item.id}'] = Math.max(0, ${qty} - 1); render();" class="w-8 h-8 rounded-full bg-white border border-[#E0E3E7] font-bold hover:bg-[#EDF2FA]">-</button>
+                        <span class="text-sm font-bold text-[#1F1F1F]">${qty}</span>
+                        <button onclick="state.clientWizardData.cart['${item.id}'] = Math.min(${avail}, ${qty} + 1); render();" class="w-8 h-8 rounded-full bg-[#0B57D0] text-white font-bold hover:bg-[#0842A0]">+</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <div class="m3-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#EDF2FA]">
+                <div>
+                  <span class="text-xs font-semibold text-[#444746]">${cartEntries.length} JENIS BARANG TERPILIH</span>
+                  <p class="font-display font-bold text-lg text-[#041E49]">Estimasi Total: ${formatRupiah(estTotal)}</p>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="state.clientWizardStep = 1; render();" class="px-4 py-2 rounded-full bg-white text-xs font-semibold text-[#444746]">Kembali</button>
+                  <button onclick="state.clientWizardStep = 3; render();" class="px-6 py-2.5 rounded-full bg-[#0B57D0] text-white text-xs font-semibold inline-flex items-center gap-1.5">
+                    <span>Lanjut Ringkasan</span>
+                    <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ` : `
+            <div class="m3-card p-6 space-y-5">
+              <h2 class="font-display font-semibold text-lg text-[#1F1F1F]">Ringkasan Pesanan Anda (Step 3/3)</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] text-xs">
+                <div>
+                  <span class="text-[#444746] block">Wedding Organizer</span>
+                  <strong class="text-sm text-[#1F1F1F]">Citra Wedding Organizer</strong>
+                </div>
+                <div>
+                  <span class="text-[#444746] block">Tanggal Pengiriman / Event</span>
+                  <strong class="text-sm text-[#1F1F1F]">${wd.tanggalAcara}</strong>
+                </div>
+                <div class="sm:col-span-2">
+                  <span class="text-[#444746] block">Lokasi Event & Catatan</span>
+                  <strong class="text-[#1F1F1F]">${wd.lokasiAcara}</strong>
+                  <p class="italic text-[#444746] mt-0.5">"${wd.catatan}"</p>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <h3 class="text-xs font-semibold text-[#444746] uppercase">Rincian Logistik</h3>
+                ${cartEntries.map(([id, qty]) => {
+                  const it = state.inventory.find(i => i.id === id);
+                  return `
+                    <div class="flex justify-between items-center py-2 border-b border-[#F1F3F4] text-xs">
+                      <span><strong>${it.nama}</strong> × ${qty}</span>
+                      <span class="font-bold">${formatRupiah(it.harga * qty)}</span>
+                    </div>
+                  `;
+                }).join('')}
+                <div class="flex justify-between items-center pt-2 font-display font-bold text-base text-[#0B57D0]">
+                  <span>Estimasi Total Sewa</span>
+                  <span>${formatRupiah(estTotal)}</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap justify-end gap-3 pt-3 border-t border-[#E0E3E7]">
+                <button onclick="state.clientWizardStep = 2; render();" class="px-5 py-2.5 rounded-full border border-[#C7D0DC] text-xs font-semibold text-[#444746]">Edit Pesanan</button>
+                <button onclick="submitClientWizardOrder()" class="px-6 py-2.5 rounded-full bg-[#0B57D0] text-white text-xs font-semibold inline-flex items-center gap-2">
+                  <span class="material-symbols-rounded text-[18px]">send</span>
+                  Kirim Pesanan Sekarang
+                </button>
+              </div>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function submitClientWizardOrder() {
+      const wd = state.clientWizardData;
+      const items = Object.entries(wd.cart)
+        .filter(([_, qty]) => qty > 0)
+        .map(([id, qty]) => {
+          const it = state.inventory.find(i => i.id === id);
+          return { idBarang: id, nama: it.nama, qty, harga: it.harga };
+        });
+      if (!items.length) {
+        showSnackbar('Pilih minimal 1 item perlengkapan terlebih dahulu.', 'error');
+        return;
+      }
+      const newOrdId = 'ORD-' + Math.floor(100 + Math.random() * 899);
+      state.orders.unshift({
+        id: newOrdId,
+        wo: 'Citra Wedding Organizer',
+        acara: 'Pesanan Proyek WO (' + wd.lokasiAcara.split(',')[0] + ')',
+        tglPesan: new Date().toISOString().slice(0, 10),
+        tglAcara: wd.tanggalAcara,
+        lokasi: wd.lokasiAcara,
+        status: 'Menunggu_Review',
+        stokValid: true,
+        fieldManager: 'Menunggu Penugasan',
+        catatan: wd.catatan,
+        items
+      });
+      state.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        type: 'SYSTEM',
+        title: `Pesanan Baru Masuk #${newOrdId}`,
+        desc: `Citra Wedding Organizer mengajukan sewa perlengkapan untuk tanggal ${wd.tanggalAcara}.`,
+        time: 'Baru saja',
+        unread: true
+      });
+      state.clientWizardStep = 1;
+      setTab('orders');
+      showSnackbar(`Pesanan #${newOrdId} berhasil dikirim! Menunggu validasi Admin/Manajer dalam 1×24 jam.`);
+    }
+
+    function renderClientInvoicesView() {
+      const myInv = state.invoices.filter(i => i.wo.includes('Citra'));
+      return `
+        <div class="space-y-5">
+          <div>
+            <h1 class="font-display text-2xl font-semibold text-[#1F1F1F]">Invoice & Tagihan Mitra WO</h1>
+            <p class="text-sm text-[#444746]">Unduh PDF tagihan resmi atau unggah resi bukti transfer bank Anda.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${myInv.map(inv => `
+              <div class="m3-card p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="font-display font-bold text-base text-[#0B57D0]">#${inv.id}</span>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full ${inv.statusBayar === 'Lunas' ? 'bg-[#E6F4EA] text-[#137333]' : 'bg-[#FEF7E0] text-[#B06000]'}">
+                      ${inv.statusBayar.toUpperCase()}
+                    </span>
+                  </div>
+                  <p class="text-xs text-[#444746] mt-2">ID Pesanan: <strong>#${inv.orderId}</strong> • Tanggal: ${inv.tanggal}</p>
+                  <p class="font-display text-2xl font-bold text-[#1F1F1F] mt-3">${formatRupiah(inv.total - inv.diskon)}</p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#E0E3E7] flex gap-2">
+                  <button onclick="openInvoiceDetailModal('${inv.id}')" class="flex-1 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">
+                    Detail & Unduh PDF
+                  </button>
+                  ${inv.statusBayar !== 'Lunas' ? `
+                    <button onclick="markInvoicePaid('${inv.id}')" class="px-4 py-2 rounded-full bg-[#188038] text-white text-xs font-semibold">
+                      Bayar / Upload Bukti
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 15. PROFILE, SECURITY, RBAC SETTINGS & FAQ VIEW (ALL ROLES)
+    // =========================================================================
+    function renderProfileSettingsView() {
+      const user = ROLES[state.currentRole];
+      return `
+        <div class="max-w-4xl mx-auto space-y-6">
+          <div class="m3-card p-6 flex flex-col sm:flex-row items-center gap-5">
+            <div class="google-avatar-ring">
+              <div class="w-20 h-20 rounded-full flex items-center justify-center text-white font-display font-bold text-3xl border-4 border-white" style="background:${user.avatarBg}">
+                ${user.initial}
+              </div>
+            </div>
+            <div class="text-center sm:text-left flex-1">
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <h1 class="font-display text-2xl font-bold text-[#1F1F1F]">${user.fullTitle}</h1>
+                <span class="text-xs font-semibold px-3 py-0.5 rounded-full bg-[#D3E3FD] text-[#041E49]">${user.empId}</span>
+              </div>
+              <p class="text-sm text-[#444746] mt-1">${user.roleLabel} • ${user.office}</p>
+              <p class="text-xs text-[#747775] mt-1">${user.email} • ${user.phone}</p>
+            </div>
+            <button onclick="showSnackbar('Profil akun berhasil disinkronisasi!')" class="px-5 py-2.5 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">
+              Simpan Perubahan
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="m3-card p-6 space-y-4">
+              <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Keamanan & Hak Akses RBAC</h2>
+              <div class="space-y-3 text-xs">
+                <div class="p-3.5 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] flex items-center justify-between">
+                  <div>
+                    <p class="font-semibold text-[#1F1F1F]">Enkripsi Password & Sesi</p>
+                    <p class="text-[#444746]">Bcrypt Hashing + HTTPS Port 443 Aktif</p>
+                  </div>
+                  <span class="material-symbols-rounded text-[#188038]">verified_user</span>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] flex items-center justify-between">
+                  <div>
+                    <p class="font-semibold text-[#1F1F1F]">Automated Daily Database Backup</p>
+                    <p class="text-[#444746]">Terjadwal otomatis setiap pukul 23:59 WIB</p>
+                  </div>
+                  <span class="text-xs font-bold text-[#0B57D0]">Aktif</span>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7] flex items-center justify-between">
+                  <div>
+                    <p class="font-semibold text-[#1F1F1F]">Notifikasi WhatsApp & Push FCM</p>
+                    <p class="text-[#444746]">Broadcast otomatis jadwal kru & tagihan klien</p>
+                  </div>
+                  <input type="checkbox" checked onchange="showSnackbar('Preferensi notifikasi diperbarui')" class="w-4 h-4 accent-[#0B57D0]" />
+                </div>
+              </div>
+            </div>
+
+            <div class="m3-card p-6 space-y-3">
+              <h2 class="font-display font-semibold text-base text-[#1F1F1F]">Pusat Bantuan & Dokumentasi ERP</h2>
+              <div class="p-3.5 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7]">
+                <p class="text-xs font-semibold text-[#1F1F1F]">Bagaimana metode LIFO bekerja di Gudang?</p>
+                <p class="text-xs text-[#444746] mt-1">Barang yang terakhir masuk setelah proses QC bersih akan diprioritaskan keluar lebih dulu pada daftar LIFO Picking kru.</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-[#F8FAFD] border border-[#E0E3E7]">
+                <p class="text-xs font-semibold text-[#1F1F1F]">Mekanisme Anti Double-Booking</p>
+                <p class="text-xs text-[#444746] mt-1">Saat Manajer menekan "Setujui & Kunci Stok", sistem langsung mengunci kuota item pada tanggal acara tersebut.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 16. NEW WEDDING ORDER MODAL (BACK-OFFICE QUICK ACTION)
+    // =========================================================================
+    function openNewOrderModal() {
+      openModal(`
+        <div class="bg-white rounded-[28px] max-w-lg w-full p-6 shadow-2xl border border-[#E0E3E7]">
+          <div class="flex items-center justify-between pb-3 border-b border-[#E0E3E7]">
+            <h3 class="font-display font-semibold text-lg text-[#1F1F1F]">Input Pesanan Wedding Organizer Baru</h3>
+            <button onclick="closeModal()" class="p-2 rounded-full hover:bg-[#EDF2FA]"><span class="material-symbols-rounded">close</span></button>
+          </div>
+          <form onsubmit="submitQuickOrder(event)" class="space-y-3.5 mt-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Nama Klien / WO</label>
+                <input id="qo-wo" type="text" required value="Citra Wedding Organizer" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Tanggal Acara</label>
+                <input id="qo-tgl" type="date" required value="2026-07-25" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[#444746] mb-1">Nama Proyek & Lokasi Venue</label>
+              <input id="qo-acara" type="text" required placeholder="Misal: Resepsi Nabila & Fikri — Mason Pine Padalarang" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Item Utama</label>
+                <select id="qo-item" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm">
+                  ${state.inventory.map(i => `<option value="${i.id}">${i.nama}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-[#444746] mb-1">Kuantitas Sewa</label>
+                <input id="qo-qty" type="number" min="1" required value="4" class="w-full h-11 px-3 rounded-xl border border-[#747775] text-sm" />
+              </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-[#444746]">Batal</button>
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#0B57D0] text-white text-xs font-semibold">Simpan Pesanan</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function submitQuickOrder(e) {
+      e.preventDefault();
+      const wo = document.getElementById('qo-wo').value;
+      const tgl = document.getElementById('qo-tgl').value;
+      const acara = document.getElementById('qo-acara').value;
+      const itemId = document.getElementById('qo-item').value;
+      const qty = parseInt(document.getElementById('qo-qty').value, 10);
+      const inv = state.inventory.find(i => i.id === itemId);
+      const newId = 'ORD-' + Math.floor(100 + Math.random() * 899);
+
+      state.orders.unshift({
+        id: newId,
+        wo,
+        acara,
+        tglPesan: new Date().toISOString().slice(0, 10),
+        tglAcara: tgl,
+        lokasi: acara,
+        status: 'Menunggu_Review',
+        stokValid: true,
+        fieldManager: 'Darul',
+        catatan: 'Input langsung melalui Back-office Workspace.',
+        items: [{ idBarang: inv.id, nama: inv.nama, qty, harga: inv.harga }]
+      });
+      closeModal();
+      setTab('orders');
+      showSnackbar(`Pesanan baru #${newId} berhasil dibuat!`);
+    }
+
+    // =========================================================================
+    // 17. MASTER RENDER ROUTER
+    // =========================================================================
+    function getMainContentHTML() {
+      const role = state.currentRole;
+      const tab = state.activeTab;
+
+      if (tab === 'profile') return renderProfileSettingsView();
+
+      if (role === 'klien') {
+        if (tab === 'wizard') return renderClientWizardView();
+        if (tab === 'orders') return renderOrdersView();
+        if (tab === 'invoices') return renderClientInvoicesView();
+        return renderKlienDashboard();
+      }
+
+      if (role === 'kru') {
+        if (tab === 'schedule') return renderScheduleView();
+        if (tab === 'damage_report') return renderDamageReportView();
+        if (tab === 'fleet') return renderFleetTrackingView();
+        return renderKruDashboard();
+      }
+
+      // Manajer, Owner, Keuangan, Admin Gudang
+      if (tab === 'orders') return renderOrdersView();
+      if (tab === 'inventory') return renderInventoryView();
+      if (tab === 'schedule') return renderScheduleView();
+      if (tab === 'fleet') return renderFleetTrackingView();
+      if (tab === 'finance') return renderFinanceView();
+      if (tab === 'audit') return renderAuditLogView();
+      return renderManagementDashboard();
+    }
+
+    function renderMainOnly() {
+      const mainEl = document.getElementById('main-workspace');
+      if (mainEl) {
+        mainEl.innerHTML = getMainContentHTML();
+      }
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      if (!app) return;
+
+      if (!state.isLoggedIn) {
+        app.innerHTML = renderLoginScreen();
+        return;
+      }
+
+      app.innerHTML = `
+        ${renderTopAppBar()}
+        <div class="flex-1 flex">
+          ${renderNavigationDrawer()}
+          <main id="main-workspace" onclick="if(state.waffleOpen || state.profilePopoverOpen || state.notifPopoverOpen){ closeAllPopovers(); render(); }"
+            class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 max-w-[1440px] mx-auto">
+            ${getMainContentHTML()}
+          </main>
+        </div>
+      `;
+    }
+
+    // Safe immediate & DOMContentLoaded initialization
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', render);
+    } else {
+      render();
+    }
+  </script>
+</body>
+</html>
